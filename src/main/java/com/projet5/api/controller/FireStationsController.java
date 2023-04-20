@@ -1,20 +1,16 @@
 package com.projet5.api.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.projet5.api.model.FireStationNumberAndPersonsByAddress;
-import com.projet5.api.model.PeopleCoveredByFireStationAndNumberOfChildren;
-import com.projet5.api.model.Persons;
-import com.projet5.api.model.View;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.projet5.api.model.*;
 import com.projet5.api.service.FireStationsService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class FireStationsController {
@@ -48,5 +44,24 @@ public class FireStationsController {
     return fireStationsService.getFamiliesCoveredByFireStationNumber(stationNumber);
     }
 
+    @PostMapping("/firestation")
+    public void saveNewFireStation (@RequestBody FireStations fireStation) throws JSONException, JsonProcessingException {
+        fireStationsService.addANewFireStation(fireStation);
+    }
 
+    @DeleteMapping("/firestation")
+    public void deleteFireStation(@RequestParam(required = false )int stationNumber, @RequestParam(required = false) String address) throws JSONException, JsonProcessingException {
+        fireStationsService.deleteFireStation(address, stationNumber);
+    }
+
+    @PutMapping("/firestation")
+    public void upDateStationNumber(@RequestParam(name = "address") String address, @RequestParam(name = "stationNumber") int stationNumberToChange) throws JSONException, JsonProcessingException {
+        fireStationsService.upDateStationNumber(address, stationNumberToChange);
+    }
+
+@GetMapping("/firestationAll")
+    public List<FireStations> getAllFirestations() throws JSONException, JsonProcessingException {
+return fireStationsService.getAllFireStation();
+
+}
 }

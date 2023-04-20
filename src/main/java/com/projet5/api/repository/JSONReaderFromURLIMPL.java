@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,15 @@ import java.util.*;
 public class JSONReaderFromURLIMPL implements IRepository{
 
     private static final Logger logger = LogManager.getLogger("JSONReaderFromURLIMPL");
+
+    private List<Persons> listOfAllPersons = new ArrayList<>();
+
+    private List<FireStations> listOfAllFireStations = new ArrayList<>();
+
+    private List<MedicalRecords> listOfAllMedicalRecords = new ArrayList<>();
+
+    public List<FireStations> getListOAllFireStations(){ return listOfAllFireStations; }
+    public List<MedicalRecords> getListOfAllMedicalRecords(){return listOfAllMedicalRecords;}
 
     @Override
     public JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
@@ -60,10 +70,14 @@ public class JSONReaderFromURLIMPL implements IRepository{
     }
 
     @Override
-    public List<Persons> getPersons() throws JSONException, JsonProcessingException {
+    public List<Persons> getPersons(){
+
+        if(!listOfAllPersons.isEmpty())
+        {
+            return listOfAllPersons;
+        }
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<Persons> listOfAllPersons = new ArrayList<>();
             JSONArray jsonArray = getPersonsJson();
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -71,64 +85,77 @@ public class JSONReaderFromURLIMPL implements IRepository{
                 String personConvertToString = jsonPerson.toString();
                 Persons personObject = objectMapper.readValue(personConvertToString, Persons.class);
                 listOfAllPersons.add(personObject);
-            }
 
-            return listOfAllPersons;
+                List<MedicalRecords> listOfMedicalRecords = getMedicalRecords();
+
+                for(MedicalRecords medicalRecord : listOfMedicalRecords)
+                {
+                    String medicalRecordFirstName = medicalRecord.getFirstName();
+                    String medicalRecordLastName = medicalRecord.getLastName();
+
+                    listOfAllPersons.stream().filter(p -> p.getFirstName().equals(medicalRecordFirstName) && p.getLastName().equals(medicalRecordLastName)).
+                            forEach(p -> p.setMedicalRecords(medicalRecord));
+                }
+            }
         }
         catch (Exception ex) {
             logger.error("Error fetching the list of Person", ex);
         }
-        return null;
+        return listOfAllPersons;
     }
 
-    public List<Persons> setPersonsMedicalRecords(List<Persons> listOfPersons)
-    {
-        try{
-            List<MedicalRecords> listOfMedicalRecords = getMedicalRecords();
+//    public List<Persons> setPersonsMedicalRecords(List<Persons> listOfPersons)
+//    {
+//        try{
+//            List<MedicalRecords> listOfMedicalRecords = getMedicalRecords();
+//
+//            for(MedicalRecords medicalRecord : listOfMedicalRecords)
+//            {
+//                String medicalRecordFirstName = medicalRecord.getFirstName();
+//                String medicalRecordLastName = medicalRecord.getLastName();
+//
+//                listOfPersons.stream().filter(p -> p.getFirstName().equals(medicalRecordFirstName) && p.getLastName().equals(medicalRecordLastName)).
+//                        forEach(p -> p.setMedicalRecords(medicalRecord));
+//            }
+//return listOfPersons;
+//        }
+//        catch (Exception ex)
+//        {
+//            logger.error("Error fetching the list of Person with their medical records", ex);
+//        }
+//        return null;
+//    }
 
-            for(MedicalRecords medicalRecord : listOfMedicalRecords)
-            {
-                String medicalRecordFirstName = medicalRecord.getFirstName();
-                String medicalRecordLastName = medicalRecord.getLastName();
-
-                listOfPersons.stream().filter(p -> p.getFirstName().equals(medicalRecordFirstName) && p.getLastName().equals(medicalRecordLastName)).
-                        forEach(p -> p.setMedicalRecords(medicalRecord));
-            }
-return listOfPersons;
-        }
-        catch (Exception ex)
-        {
-            logger.error("Error fetching the list of Person with their medical records", ex);
-        }
-        return null;
-    }
-
+    //    @Override
+//    public List<Persons> calculateAgeOfPersons(List<Persons> listOfPersons)
+//    {
+//        try
+//        {
+//for (Persons person : listOfPersons)
+//{
+//    Date nowDate = new Date();
+//    String birthdateString = person.getMedicalRecords().getBirthdate();
+//    Date birthdateDate = new SimpleDateFormat("dd/MM/yyyy").parse(birthdateString);
+//
+//    Double ageInDouble = (nowDate.getTime()-birthdateDate.getTime())/3.154e+10;
+//    int age =  ageInDouble.intValue();
+//
+//    person.setAge(age);
+//}
+//        }
+//        catch (Exception ex)
+//        {
+//            logger.error("Error calculation for the age of each persons", ex);
+//        }
+//        return null;
+//    }
     @Override
-    public List<Persons> calculateAgeOfPersons(List<Persons> listOfPersons)
-    {
-        try
+    public List<Persons> getPersonByLastName(String lastName){
+        if (listOfAllPersons.isEmpty())
         {
-for (Persons person : listOfPersons)
-{
-    Date nowDate = new Date();
-    String birthdateString = person.getMedicalRecords().getBirthdate();
-    Date birthdateDate = new SimpleDateFormat("dd/MM/yyyy").parse(birthdateString);
-
-    Double ageInDouble = (nowDate.getTime()-birthdateDate.getTime())/3.154e+10;
-    int age =  ageInDouble.intValue();
-
-    person.setAge(age);
-}
+            listOfAllPersons = getPersons();
         }
-        catch (Exception ex)
-        {
-            logger.error("Error calculation for the age of each persons", ex);
-        }
-        return null;
-    }
-    @Override
-    public List<Persons> getPersonByLastName(String lastName) throws JSONException, JsonProcessingException {
-        List<Persons> listOfAllPersons = getPersons();
+
         List<Persons> listOfPersonsWithTheSameLastName = new ArrayList<>();
         try {
             for (Persons person : listOfAllPersons) {
@@ -136,28 +163,56 @@ for (Persons person : listOfPersons)
                     listOfPersonsWithTheSameLastName.add(person);
                 }
             }
-            return listOfPersonsWithTheSameLastName;
+
         } catch (Exception ex) {
             logger.error("Error fetching the list of persons with same firstName", ex);
+        }
+        return listOfPersonsWithTheSameLastName;
+    }
+    @Override
+    public List<Persons> calculateAgeOfPersons(List<Persons> listOfPersons)
+    {
+        try
+        {
+            for (Persons person : listOfPersons)
+            {
+                Date nowDate = new Date();
+                String birthdateString = person.getMedicalRecords().getBirthdate();
+                Date birthdateDate = new SimpleDateFormat("dd/MM/yyyy").parse(birthdateString);
+
+                Double ageInDouble = (nowDate.getTime()-birthdateDate.getTime())/3.154e+10;
+                int age =  ageInDouble.intValue();
+
+                person.setAge(age);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.error("Error calculation for the age of each persons", ex);
         }
         return null;
     }
 
     @Override
     public List<Persons> getAllPersonsByAddress(String address) throws JSONException, JsonProcessingException {
-        List<Persons> listOfAllPersons = getPersons();
+        if(listOfAllPersons.isEmpty())
+        {
+            listOfAllPersons = getPersons();
+        }
+
         List<Persons> listOfPersonByAddress = new ArrayList<>();
+
         try {
             for (Persons person : listOfAllPersons) {
                 if (address.equals(person.getAddress())) {
                     listOfPersonByAddress.add(person);
                 }
             }
-            return listOfPersonByAddress;
+
         } catch (Exception ex) {
             logger.error("Error fetching the persons by address", ex);
         }
-        return null;
+        return listOfPersonByAddress;
     }
 
     @Override
@@ -214,7 +269,6 @@ for (Persons person : listOfPersons)
     @Override
     public List<FireStations> getFireStations() throws JSONException, JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<FireStations> listOfAllFireStations = new ArrayList<>();
         JSONArray jsonArray = getFireStationsJson();
 
         for(int i=0; i<jsonArray.length(); i++)
@@ -231,9 +285,12 @@ for (Persons person : listOfPersons)
 
     @Override
     public FireStations getFireStationByAddress(String address) throws JSONException, JsonProcessingException {
-        //create the list of all fire stations
-        List<FireStations> listOfAllFireStations = getFireStations();
 
+        if(listOfAllFireStations.isEmpty())
+        {
+            //create the list of all fire stations
+            listOfAllFireStations = getFireStations();
+        }
         try {
             for (FireStations fireStation : listOfAllFireStations) {
                 if (fireStation.getAddress().equals(address)) {
@@ -250,13 +307,16 @@ for (Persons person : listOfPersons)
 
     @Override
     public List<MedicalRecords> getMedicalRecordsByAddress(String address) {
+
+        //crete the list of medical records of the address
+        List<MedicalRecords> listOfMedicalRecordsByAddress = new ArrayList<>();
+
         try {
             //crete list of all persons which live in the address
             List<Persons> listOfPersonsWhoLiveInAddress = getAllPersonsByAddress(address);
             //crete list of all medical records
             List<MedicalRecords> listOfAllMedicalRecords = getMedicalRecords();
-            //crete the list of medical records of the address
-            List<MedicalRecords> listOfMedicalRecordsByAddress = new ArrayList<>();
+
 
             for (Persons person : listOfPersonsWhoLiveInAddress) {
                 String personFirstName = person.getFirstName();
@@ -271,23 +331,25 @@ for (Persons person : listOfPersons)
                     }
                 }
             }
-            return listOfMedicalRecordsByAddress;
         }
         catch(Exception ex){
             logger.error("Error fetching the list of Medical Records by address",ex);
         }
-        return null;
+        return listOfMedicalRecordsByAddress;
     }
 
     @Override
-    public List<FireStations> getFireStationByStationNumber(int stationNumber){
+    public List<FireStations> getFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException {
 
-        try {
+        List<FireStations> listOfFireStationsByStationNumber = new ArrayList<>();
 
-            List<FireStations> listOfAllFireStation = getFireStations();
-            List<FireStations> listOfFireStationsByStationNumber = new ArrayList<>();
-
-            for(FireStations fireStation : listOfAllFireStation)
+        if(listOfAllFireStations.isEmpty())
+        {
+            listOfAllFireStations = getFireStations();
+        }
+        try
+        {
+            for(FireStations fireStation : listOfAllFireStations)
             {
                 int fireStationNumber = fireStation.getStation();
 
@@ -296,53 +358,50 @@ for (Persons person : listOfPersons)
                     listOfFireStationsByStationNumber.add(fireStation);
                 }
             }
-
-            return listOfFireStationsByStationNumber;
-
         }
         catch(Exception ex){
             logger.error("Error fetching the list of FireStations by station Number",ex);
         }
-        return null;
+        return listOfFireStationsByStationNumber;
     }
 
 
 
 
-        // Main driver method
-        public String convertPersonToJson(Persons person)
-        {
+
+    public String convertPersonToJson(Persons person)
+    {
 //            // Creating object of Organisation
 //            Organisation org = new Organisation();
 //
 //            // Insert the data into the object
 //            org = getObjectData(org);
 
-            // Creating Object of ObjectMapper define in Jackson
-            // Api
-            ObjectMapper Obj = new ObjectMapper();
+        // Creating Object of ObjectMapper define in Jackson
+        // Api
+        ObjectMapper Obj = new ObjectMapper();
 
-            // Try block to check for exceptions
-            try {
+        // Try block to check for exceptions
+        try {
 
-                // Getting organisation object as a json string
-                String personJsonStr = Obj.writeValueAsString(person);
+            // Getting organisation object as a json string
+            String personJsonStr = Obj.writeValueAsString(person);
 
-                // Displaying JSON String on console
-                System.out.println(personJsonStr);
+            // Displaying JSON String on console
+            System.out.println(personJsonStr);
 
-                return personJsonStr;
-            }
-
-            // Catch block to handle exceptions
-            catch (IOException e) {
-
-                // Display exception along with line number
-                // using printStackTrace() method
-                e.printStackTrace();
-            }
-            return null;
+            return personJsonStr;
         }
+
+        // Catch block to handle exceptions
+        catch (IOException e) {
+
+            // Display exception along with line number
+            // using printStackTrace() method
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 //        // Method
 //        // Getting the data to be inserted
@@ -360,4 +419,240 @@ for (Persons person : listOfPersons)
 //            // Returning the object
 //            return org;
 //        }
+
+
+    @Override
+    public void saveNewPerson(Persons person)
+    {
+        if(listOfAllPersons.isEmpty())
+        {
+            listOfAllPersons = getPersons();
+        }
+        try {
+            listOfAllPersons.add(person);
+
+            logger.debug("The new person was saved");
+        }
+        catch(Exception ex){
+            logger.error("Error save the new person ",ex);
+        }
+    }
+
+    @Override
+    public void deletePerson(String firstName, String lastName)
+    {
+        if(listOfAllPersons.isEmpty())
+        {
+            listOfAllPersons = getPersons();
+        }
+        try
+        {
+            for(Persons person : listOfAllPersons)
+            {
+                String firstNamePerson = person.getFirstName();
+                String lastNamePerson = person.getLastName();
+                if(firstNamePerson.equals(firstName) && lastNamePerson.equals(lastName))
+                {
+                    int indexOfPerson = listOfAllPersons.indexOf(person);
+                    listOfAllPersons.remove(indexOfPerson);
+                    logger.debug("The person was delete");
+                }
+            }
+
+        }
+        catch(Exception ex){
+            logger.error("Error delete the person ",ex);
+        }
+    }
+
+    @Override
+    public void upDatePersonInfo(Persons person)
+    {
+        System.out.println("nous lancons bien la methode update");
+
+        if(listOfAllPersons.isEmpty())
+        {
+            listOfAllPersons = getPersons();
+        }
+        try
+        {
+            for (Persons personTarget : listOfAllPersons)
+            {
+                String firstNamePerson = personTarget.getFirstName();
+                String lastNamePerson = personTarget.getLastName();
+
+                if(firstNamePerson.equals(person.getFirstName()) && lastNamePerson.equals(person.getLastName()))
+                {
+//                    for(Field fieldPerson : person.getClass().getDeclaredFields())
+//                    {
+//                        for(Field fieldPersonTarget : personTarget.getClass().getDeclaredFields())
+//                        {
+//                            if(fieldPerson.getName().equals(fieldPersonTarget.getName()))
+//                            {
+//                                fieldPersonTarget.set(fieldPerson, fieldPerson.);
+//                            }
+//                        }
+//                    }
+                    personTarget.setAge(person.getAge());
+                    personTarget.setMedicalRecords(person.getMedicalRecords());
+                    personTarget.setCity(person.getCity());
+                    personTarget.setEmail(person.getEmail());
+                    personTarget.setAddress(person.getAddress());
+                    personTarget.setPhone(person.getPhone());
+                    personTarget.setZip(person.getZip());
+
+                    System.out.println("Nous avons bien accomplit la update");
+                }
+            }
+        }
+        catch(Exception ex){
+            logger.error("Error update the person's info ",ex);
+        }
+    }
+
+
+    @Override
+    public void saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException {
+        if(listOfAllFireStations.isEmpty())
+        {
+            listOfAllFireStations = getFireStations();
+        }
+        try {
+            listOfAllFireStations.add(fireStation);
+
+            logger.debug("The new fire station was saved");
+        }
+        catch(Exception ex){
+            logger.error("Error save the new fire station ",ex);
+        }
+    }
+
+    @Override
+    public void deleteFireStation(int stationNumber, String address) throws JSONException, JsonProcessingException {
+        if (listOfAllFireStations.isEmpty())
+        {
+            listOfAllFireStations = getFireStations();
+        }
+        try
+        {
+            for(FireStations fireStations : listOfAllFireStations)
+            {
+                String addressTarget = fireStations.getAddress();
+                int stationNumberTarget = fireStations.getStation();
+
+
+                if(address.equals(addressTarget) || stationNumber==stationNumberTarget)
+                {
+                    int indexOfStation = listOfAllFireStations.indexOf(fireStations);
+                    listOfAllPersons.remove(indexOfStation);
+                    logger.debug("The fire station was delete");
+                }
+            }
+
+        }
+        catch(Exception ex){
+            logger.error("Error delete the fire station ",ex);
+        }
+    }
+
+    @Override
+    public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException {
+        if (listOfAllFireStations.isEmpty())
+        {
+            listOfAllFireStations = getFireStations();
+        }
+        try
+        {
+            for(FireStations fireStation : listOfAllFireStations)
+            {
+                if(address.equals(fireStation.getAddress()))
+                {
+                    fireStation.setStation(stationNumber);
+
+                    logger.debug("The station Number at the address :"+address+" was upDated");
+                }
+            }
+        }
+        catch(Exception ex){
+            logger.error("Error update the fire station Number",ex);
+        }
+
+    }
+
+    @Override
+    public void saveNewMedicalRecords(MedicalRecords medicalRecord)
+    {
+        if (listOfAllMedicalRecords.isEmpty())
+        {
+            listOfAllMedicalRecords = getMedicalRecords();
+        }
+        try
+        {
+            listOfAllMedicalRecords.add(medicalRecord);
+            logger.debug("the new medical records were saved");
+        }
+        catch(Exception ex){
+            logger.error("Error save the new medical records",ex);
+        }
+    }
+
+    @Override
+    public void upDateMedicalRecords(MedicalRecords medicalRecord)
+    {
+        if (listOfAllMedicalRecords.isEmpty())
+        {
+            listOfAllMedicalRecords = getMedicalRecords();
+        }
+        try
+        {
+            for (MedicalRecords medicalRecordSelected : listOfAllMedicalRecords)
+            {
+                String firstNameSelectedMedicalRecord = medicalRecordSelected.getFirstName();
+                String lastNameSelectedMedicalRecord = medicalRecordSelected.getLastName();
+
+                if(firstNameSelectedMedicalRecord.equals(medicalRecord.getFirstName())&& lastNameSelectedMedicalRecord.equals(medicalRecord.getLastName()))
+                {
+                    medicalRecordSelected.setMedications(medicalRecord.getMedications());
+                    medicalRecordSelected.setAllergies(medicalRecord.getAllergies());
+
+                    logger.debug("the medical records were update");
+                }
+            }
+        }
+        catch(Exception ex){
+            logger.error("Error update the medical records",ex);
+        }
+    }
+
+    @Override
+    public void deleteMedicalRecords(String firstName, String lastName)
+    {
+        if (listOfAllMedicalRecords.isEmpty())
+        {
+            listOfAllMedicalRecords = getMedicalRecords();
+        }
+        try
+        {
+            for (MedicalRecords medicalRecordSelected : listOfAllMedicalRecords)
+            {
+                String firstNameSelectedMedicalRecord = medicalRecordSelected.getFirstName();
+                String lastNameSelectedMedicalRecord = medicalRecordSelected.getLastName();
+
+                if(firstNameSelectedMedicalRecord.equals(firstName) && lastNameSelectedMedicalRecord.equals(lastName))
+                {
+                    List<String> medicationToDelete = medicalRecordSelected.getMedications();
+                    List<String> allergiesToDelete = medicalRecordSelected.getAllergies();
+
+                    medicalRecordSelected.getMedications().removeAll(medicationToDelete);
+                    medicalRecordSelected.getAllergies().removeAll(allergiesToDelete);
+
+                    logger.debug("the medical records were delete");
+                }
+            }
+        }
+        catch(Exception ex){
+            logger.error("Error delete the medical records",ex);
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.projet5.api.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.projet5.api.model.*;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
 import lombok.Data;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Data
@@ -30,9 +32,9 @@ public class PersonsService {
         try {
             //create the list of adults who live at the same address
             List<Persons> listOfPersonsByAddress = jsonReaderFromURLIMPL.getAllPersonsByAddress(address);
-            jsonReaderFromURLIMPL.setPersonsMedicalRecords(listOfPersonsByAddress);
+
             //calculate the age of each persons
-            jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsByAddress);
+           jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsByAddress);
 
             List<Persons> listOfChildren = new ArrayList<>();
 
@@ -59,32 +61,29 @@ public class PersonsService {
     }
 
 
-public PersonAndPeopleWithSameLastName getPersonByFirstNameAndLastName(String firstName, String lastName)
-{
+public List<Persons> getPersonInfo(String firstName, String lastName) {
+    List<Persons> listOfPersonsByLastName = jsonReaderFromURLIMPL.getPersonByLastName(lastName);
+    List<Persons> listOfPersonSearch = new ArrayList<>();
+
     try {
-        List<Persons> listOfPersonsByLastName = jsonReaderFromURLIMPL.getPersonByLastName(lastName);
-        jsonReaderFromURLIMPL.setPersonsMedicalRecords(listOfPersonsByLastName);
+
         jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsByLastName);
-        PersonAndPeopleWithSameLastName personAndPeopleWithSameLastName = new PersonAndPeopleWithSameLastName();
 
-        int indexOfSearchedPerson = 0;
-
-        for (Persons person : listOfPersonsByLastName) {
+        for(Persons person : listOfPersonsByLastName)
+        {
             String firstNamePerson = person.getFirstName();
 
-            if (firstNamePerson.equals(firstName)) {
-                personAndPeopleWithSameLastName.setPerson(person);
-                indexOfSearchedPerson = listOfPersonsByLastName.indexOf(person);
+            if(firstName.equals(firstNamePerson))
+            {
+                listOfPersonSearch.add(person);
             }
         }
-        listOfPersonsByLastName.remove(indexOfSearchedPerson);
-        personAndPeopleWithSameLastName.setListOfOtherPeopleWithSameLastName(listOfPersonsByLastName);
-        return personAndPeopleWithSameLastName;
+        logger.debug("The person's info search was completed ");
     }
     catch (Exception ex) {
         logger.error("Error fetching the list of  persons by their firstName", ex);
     }
-    return null;
+    return listOfPersonSearch;
 }
 
 public List<Persons> getAllPersonsByCity(String city)
@@ -112,48 +111,23 @@ return listOfPersonsWhoLiveInTheSelectedCity;
     return null;
 }
 
-    public void saveNewPerson(Persons person)
-    {
-        try
-        {
-            //create the URL
-            URL url = new URL ("https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DA+Java+EN/P5+/data.json");
-            //open connection
-            HttpURLConnection con = (HttpURLConnection)url.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json");
-            con.setRequestProperty("Accept", "application/json");
-            con.setDoOutput(true);
+public void addANewPerson(Persons person)
+{
+    jsonReaderFromURLIMPL.saveNewPerson(person);
+}
 
-//            //convert object Persons into String and create the request body
-            String jsonInputString = jsonReaderFromURLIMPL.convertPersonToJson(person);
+public void deleteThePerson(String firstName, String lastName)
+{
+    jsonReaderFromURLIMPL.deletePerson(firstName, lastName);
+}
 
-            try(OutputStream os = con.getOutputStream())
-            {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
+public void upDatePerson(Persons person)
+{
+    jsonReaderFromURLIMPL.upDatePersonInfo(person);
+}
 
-            try(BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream(), "utf-8"))) {
-                StringBuilder response = new StringBuilder();
-                String responseLine = null;
-                while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine.trim());
-                }
-                System.out.println(response.toString());
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.error("Error save the person", ex);
-        }
-    }
 
-//    public Persons editPersonInfo(Persons person)
-//    {
-//
-//    }
+
 }
 
 

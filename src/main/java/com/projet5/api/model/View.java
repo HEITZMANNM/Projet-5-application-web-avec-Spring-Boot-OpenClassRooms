@@ -32,10 +32,7 @@ public class View {
     }
     public interface StationNumber{
     }
-    public interface NumberOfChildren{
-    }
-    public interface NumberOfAdults{
-    }
+
     public interface Age{
     }
 
@@ -56,7 +53,7 @@ public class View {
     }
     public interface PeopleCoveredByFireStationNumber extends FirstName, LastName, AddressPerson, Phone {
     }
-    public interface PeopleCoveredByFireStationAndNumberOfChildren extends PeopleCoveredByFireStationNumber, NumberOfChildren, NumberOfAdults{
+    public interface PeopleCoveredByFireStationAndNumberOfChildren extends PeopleCoveredByFireStationNumber{
     }
     public interface ChildrenByAddressAndOtherMemberOfFamily extends FirstName, LastName, Age{
     }

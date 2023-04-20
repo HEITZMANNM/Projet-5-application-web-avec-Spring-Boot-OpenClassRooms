@@ -1,8 +1,8 @@
 package com.projet5.api.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.projet5.api.model.ListOfChildrenAndAdultsByAddress;
-import com.projet5.api.model.PersonAndPeopleWithSameLastName;
 import com.projet5.api.model.Persons;
 import com.projet5.api.model.View;
 import com.projet5.api.service.PersonsService;
@@ -21,28 +21,40 @@ public class PersonsController {
 
     @JsonView(View.ChildrenByAddressAndOtherMemberOfFamily.class)
     @GetMapping("/childAlert")
-    public ListOfChildrenAndAdultsByAddress getChildrenAtTheAddressAndOtherMemberOfFamily(@RequestParam(name = "address") String address) throws JSONException, IOException
-    {
+    public ListOfChildrenAndAdultsByAddress getChildrenAtTheAddressAndOtherMemberOfFamily(@RequestParam(name = "address") String address) throws JSONException, IOException {
         return personsService.getChildrenAtAddressAndTheOtherMemberOfFamily(address);
     }
 
     @JsonView(View.PersonSearchAndPersonsWithSameLastName.class)
     @GetMapping("/personInfo")
-    public PersonAndPeopleWithSameLastName getPersonAndPeopleWithSameLastName(@RequestParam(name= "firstName") String firstname, @RequestParam(name= "lastName") String lastName)
-    {
-        return personsService.getPersonByFirstNameAndLastName(firstname, lastName);
+    public List<Persons> getPersonInfo(@RequestParam(name = "firstName") String firstname, @RequestParam(name = "lastName") String lastName) {
+        return personsService.getPersonInfo(firstname, lastName);
     }
 
     @JsonView(View.Email.class)
     @GetMapping("/communityEmail")
-    public List<Persons> getEmailOfPersonsWhoLiveAtSelectedCity(@RequestParam(name = "city") String city)
-    {
+    public List<Persons> getEmailOfPersonsWhoLiveAtSelectedCity(@RequestParam(name = "city") String city) {
         return personsService.getAllPersonsByCity(city);
     }
 
     @PostMapping("/person")
     public void postNewPerson(@RequestBody Persons person)
     {
-        personsService.saveNewPerson(person);
+
+        personsService.addANewPerson(person);
     }
+
+    @DeleteMapping("/person")
+    public void deletePerson(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
+    {
+        personsService.deleteThePerson(firstName, lastName);
+    }
+
+    @PutMapping("/person")
+    public void putPerson(@RequestBody Persons person)
+    {
+        personsService.upDatePerson(person);
+    }
+
+
 }

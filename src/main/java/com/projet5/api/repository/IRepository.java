@@ -28,9 +28,25 @@ public interface IRepository {
     public List<Persons> getAllPersonsByAddress(String address) throws JSONException, JsonProcessingException;
     public JSONArray getFireStationsJson();
     public List<FireStations> getFireStations() throws JSONException, JsonProcessingException;
-    public List<FireStations> getFireStationByStationNumber(int stationNumber);
-
+    public List<FireStations> getFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException;
     public List<Persons> calculateAgeOfPersons(List<Persons> listOfPersons);
+    public void saveNewPerson(Persons person);
+
+    public void deletePerson(String firstName, String lastName);
+
+    public void upDatePersonInfo (Persons person);
+
+    public void saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException;
+
+    public void deleteFireStation(int stationNumber, String address) throws JSONException, JsonProcessingException;
+
+    public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException;
+
+    public void saveNewMedicalRecords(MedicalRecords medicalRecord);
+
+    public void upDateMedicalRecords(MedicalRecords medicalRecord);
+
+    public void deleteMedicalRecords(String firstName, String lasteName);
 }
 
 

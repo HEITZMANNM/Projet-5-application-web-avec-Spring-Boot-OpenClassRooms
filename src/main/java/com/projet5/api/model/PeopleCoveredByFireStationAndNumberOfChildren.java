@@ -10,10 +10,9 @@ public class PeopleCoveredByFireStationAndNumberOfChildren {
 
 @JsonView(View.PeopleCoveredByFireStationNumber.class)
     List<Persons> listOfPersonsCovered;
-    @JsonView(View.NumberOfChildren.class)
+
     int numberOfChildren;
 
-    @JsonView(View.NumberOfAdults.class)
     int numberOfAdults;
 
     public PeopleCoveredByFireStationAndNumberOfChildren(List<Persons> listOfPersonsCovered, int numberOfChildren, int numberOfAdults)
