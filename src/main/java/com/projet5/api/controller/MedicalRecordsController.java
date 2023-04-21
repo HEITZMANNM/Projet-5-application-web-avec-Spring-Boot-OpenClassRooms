@@ -33,16 +33,4 @@ public class MedicalRecordsController {
     {
         medicalRecordsService.deleteMedicalRecords(firstName, lastName);
     }
-
-
-
-
-
-
-
-    @GetMapping("/medicalRecordAll")
-    public List<MedicalRecords> getAllMedicalRecords() {
-        return medicalRecordsService.getAllMedicalRecords();
-    }
-
 }

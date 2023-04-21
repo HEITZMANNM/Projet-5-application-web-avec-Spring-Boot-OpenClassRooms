@@ -8,11 +8,14 @@ import com.projet5.api.model.Persons;
 import com.projet5.api.service.FireStationsService;
 import org.json.JSONException;
 import org.junit.Test;
+//import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +41,7 @@ public class FireStationServiceTest
 
     private FireStationsService fireStationsService;
 
-//create fireStations and List of people used to test the different method of fireStationService
+    //create fireStations and List of people used to test the different method of fireStationService
     public void setUp() throws JSONException, JsonProcessingException {
 
         listOfFireStationByNumber3 = new ArrayList<>();
@@ -71,10 +74,7 @@ public class FireStationServiceTest
 
         listOfFireStationByNumber4.add(fireStationsThree);
 
-
-
         fireStationsService = new FireStationsService();
-
 
         Persons child = new Persons();
         Persons father = new Persons();
@@ -140,37 +140,37 @@ public class FireStationServiceTest
         assertEquals(peopleCoveredByFireStationAndNumberOfChildren.getListOfPersonsCovered().size(), 3);
     }
 
-@Test
+    @Test
     public void testToFindPeopleCoveredByStationNumber() throws JSONException, JsonProcessingException {
 
-    setUp();
+        setUp();
 
-    List<Persons> listOfPersonsCoveredByStationNumber = fireStationsService.getPersonsCoveredByFireStationNumber(4);
+        List<Persons> listOfPersonsCoveredByStationNumber = fireStationsService.getPersonsCoveredByFireStationNumber(4);
 
-    assertEquals(listOfPersonsCoveredByStationNumber.size(), 3);
-}
+        assertEquals(listOfPersonsCoveredByStationNumber.size(), 3);
+    }
 
-@Test
+    @Test
     public void testToFindAllPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem() throws JSONException, JsonProcessingException
-{
-    setUp();
+    {
+        setUp();
 
-    FireStationNumberAndPersonsByAddress fireStationNumberAndPersonsByAddress = fireStationsService.getPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem("22 high street");
+        FireStationNumberAndPersonsByAddress fireStationNumberAndPersonsByAddress = fireStationsService.getPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem("22 high street");
 
-    assertEquals(fireStationNumberAndPersonsByAddress.getFireStationNumber(), 4);
-    assertEquals(fireStationNumberAndPersonsByAddress.getListOfPersonWithMedicalRecords().size(), 3);
-}
+        assertEquals(fireStationNumberAndPersonsByAddress.getFireStationNumber(), 4);
+        assertEquals(fireStationNumberAndPersonsByAddress.getListOfPersonWithMedicalRecords().size(), 3);
+    }
 
-@Test
+    @Test
     public void testToFindAllFamiliesCoveredByFireStationNumber() throws JSONException, JsonProcessingException
-{
-    setUp();
+    {
+        setUp();
 
-    List<List<Persons>> listOfFamiliesCovered = fireStationsService.getFamiliesCoveredByFireStationNumber(4);
+        List<List<Persons>> listOfFamiliesCovered = fireStationsService.getFamiliesCoveredByFireStationNumber(4);
 
-    assertEquals(listOfFamiliesCovered.size(), 1);
-    assertEquals(listOfFamiliesCovered.get(0).size(), 3);
-}
+        assertEquals(listOfFamiliesCovered.size(), 1);
+        assertEquals(listOfFamiliesCovered.get(0).size(), 3);
+    }
 
 
 
