@@ -29,7 +29,7 @@ public interface IRepository {
     public JSONArray getFireStationsJson();
     public List<FireStations> getFireStations() throws JSONException, JsonProcessingException;
     public List<FireStations> getFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException;
-    public List<Persons> calculateAgeOfPersons(List<Persons> listOfPersons);
+    public void calculateAgeOfPersons(List<Persons> listOfPersons);
     public void saveNewPerson(Persons person);
 
     public void deletePerson(String firstName, String lastName);

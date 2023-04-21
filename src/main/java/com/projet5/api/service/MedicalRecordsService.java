@@ -35,13 +35,4 @@ public class MedicalRecordsService {
     {
         jsonReaderFromURLIMPL.deleteMedicalRecords(firstName, lastName);
     }
-
-
-
-    //Pour tester
-    public List<MedicalRecords> getAllMedicalRecords()
-    {
-      return  jsonReaderFromURLIMPL.getListOfAllMedicalRecords();
-    }
-
 }

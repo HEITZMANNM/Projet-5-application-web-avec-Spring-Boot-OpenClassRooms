@@ -43,18 +43,14 @@ public class PersonsController {
 
         personsService.addANewPerson(person);
     }
-
     @DeleteMapping("/person")
     public void deletePerson(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
     {
         personsService.deleteThePerson(firstName, lastName);
     }
-
     @PutMapping("/person")
     public void putPerson(@RequestBody Persons person)
     {
         personsService.upDatePerson(person);
     }
-
-
 }

@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -170,7 +169,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
         return listOfPersonsWithTheSameLastName;
     }
     @Override
-    public List<Persons> calculateAgeOfPersons(List<Persons> listOfPersons)
+    public void calculateAgeOfPersons(List<Persons> listOfPersons)
     {
         try
         {
@@ -190,7 +189,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
         {
             logger.error("Error calculation for the age of each persons", ex);
         }
-        return null;
+
     }
 
     @Override
@@ -458,7 +457,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
                     logger.debug("The person was delete");
                 }
             }
-
         }
         catch(Exception ex){
             logger.error("Error delete the person ",ex);
@@ -468,8 +466,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public void upDatePersonInfo(Persons person)
     {
-        System.out.println("nous lancons bien la methode update");
-
         if(listOfAllPersons.isEmpty())
         {
             listOfAllPersons = getPersons();
@@ -483,16 +479,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
                 if(firstNamePerson.equals(person.getFirstName()) && lastNamePerson.equals(person.getLastName()))
                 {
-//                    for(Field fieldPerson : person.getClass().getDeclaredFields())
-//                    {
-//                        for(Field fieldPersonTarget : personTarget.getClass().getDeclaredFields())
-//                        {
-//                            if(fieldPerson.getName().equals(fieldPersonTarget.getName()))
-//                            {
-//                                fieldPersonTarget.set(fieldPerson, fieldPerson.);
-//                            }
-//                        }
-//                    }
                     personTarget.setAge(person.getAge());
                     personTarget.setMedicalRecords(person.getMedicalRecords());
                     personTarget.setCity(person.getCity());
@@ -500,16 +486,14 @@ public class JSONReaderFromURLIMPL implements IRepository{
                     personTarget.setAddress(person.getAddress());
                     personTarget.setPhone(person.getPhone());
                     personTarget.setZip(person.getZip());
-
-                    System.out.println("Nous avons bien accomplit la update");
                 }
             }
+            logger.debug("The person's info were update");
         }
         catch(Exception ex){
             logger.error("Error update the person's info ",ex);
         }
     }
-
 
     @Override
     public void saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException {
@@ -537,15 +521,26 @@ public class JSONReaderFromURLIMPL implements IRepository{
         {
             for(FireStations fireStations : listOfAllFireStations)
             {
-                String addressTarget = fireStations.getAddress();
-                int stationNumberTarget = fireStations.getStation();
+                String addressTarget=fireStations.getAddress();
+                int stationNumberTarget=fireStations.getStation();
 
-
-                if(address.equals(addressTarget) || stationNumber==stationNumberTarget)
+                if(!address.isEmpty())
                 {
-                    int indexOfStation = listOfAllFireStations.indexOf(fireStations);
-                    listOfAllPersons.remove(indexOfStation);
-                    logger.debug("The fire station was delete");
+                    if(address.equals(addressTarget))
+                    {
+                        int indexOfStation = listOfAllFireStations.indexOf(fireStations);
+                        listOfAllPersons.remove(indexOfStation);
+                        logger.debug("The fire station was delete");
+                    }
+                }
+                else
+                {
+                    if(stationNumber==stationNumberTarget)
+                    {
+                        int indexOfStation = listOfAllFireStations.indexOf(fireStations);
+                        listOfAllPersons.remove(indexOfStation);
+                        logger.debug("The fire station was delete");
+                    }
                 }
             }
 
@@ -576,7 +571,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
         catch(Exception ex){
             logger.error("Error update the fire station Number",ex);
         }
-
     }
 
     @Override

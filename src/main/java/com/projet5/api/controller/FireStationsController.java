@@ -38,7 +38,7 @@ public class FireStationsController {
         return fireStationsService.getPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem(address);
     }
 
-    @JsonView(View.FamilysPersonsCoveredByStationNumber.class)
+    @JsonView(View.FamiliesPersonsCoveredByStationNumber.class)
     @GetMapping("/flood")
     public List<List<Persons>> getFamiliesCoveredByFireStationNumber(@RequestParam(name = "stationNumber") int stationNumber){
     return fireStationsService.getFamiliesCoveredByFireStationNumber(stationNumber);
@@ -49,6 +49,7 @@ public class FireStationsController {
         fireStationsService.addANewFireStation(fireStation);
     }
 
+
     @DeleteMapping("/firestation")
     public void deleteFireStation(@RequestParam(required = false )int stationNumber, @RequestParam(required = false) String address) throws JSONException, JsonProcessingException {
         fireStationsService.deleteFireStation(address, stationNumber);
@@ -58,10 +59,4 @@ public class FireStationsController {
     public void upDateStationNumber(@RequestParam(name = "address") String address, @RequestParam(name = "stationNumber") int stationNumberToChange) throws JSONException, JsonProcessingException {
         fireStationsService.upDateStationNumber(address, stationNumberToChange);
     }
-
-@GetMapping("/firestationAll")
-    public List<FireStations> getAllFirestations() throws JSONException, JsonProcessingException {
-return fireStationsService.getAllFireStation();
-
-}
 }

@@ -28,13 +28,16 @@ public class PersonsService {
     JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
 
-    public ListOfChildrenAndAdultsByAddress getChildrenAtAddressAndTheOtherMemberOfFamily(String address) throws JSONException, IOException {
+    public ListOfChildrenAndAdultsByAddress getChildrenAtAddressAndTheOtherMemberOfFamily(String address) throws JSONException, IOException
+    {
+        ListOfChildrenAndAdultsByAddress listOfChildrenAndAdultsByAddress = new ListOfChildrenAndAdultsByAddress();
+
         try {
             //create the list of adults who live at the same address
             List<Persons> listOfPersonsByAddress = jsonReaderFromURLIMPL.getAllPersonsByAddress(address);
 
             //calculate the age of each persons
-           jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsByAddress);
+            jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsByAddress);
 
             List<Persons> listOfChildren = new ArrayList<>();
 
@@ -50,84 +53,82 @@ public class PersonsService {
                     listOfAdult.add(person);
                 }
             }
-            ListOfChildrenAndAdultsByAddress listOfChildrenAndAdultsByAddress = new ListOfChildrenAndAdultsByAddress(listOfChildren, listOfAdult);
+            listOfChildrenAndAdultsByAddress.setListOfChildren(listOfChildren);
+            listOfChildrenAndAdultsByAddress.setListOfAdults(listOfAdult);
 
-            return listOfChildrenAndAdultsByAddress;
+            logger.debug("The list of children and adult by address was created");
         }
         catch (Exception ex) {
             logger.error("Error fetching the list of children and adult by address", ex);
         }
-        return null;
+        return listOfChildrenAndAdultsByAddress;
     }
 
 
-public List<Persons> getPersonInfo(String firstName, String lastName) {
-    List<Persons> listOfPersonsByLastName = jsonReaderFromURLIMPL.getPersonByLastName(lastName);
-    List<Persons> listOfPersonSearch = new ArrayList<>();
-
-    try {
-
-        jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsByLastName);
-
-        for(Persons person : listOfPersonsByLastName)
-        {
-            String firstNamePerson = person.getFirstName();
-
-            if(firstName.equals(firstNamePerson))
-            {
-                listOfPersonSearch.add(person);
-            }
-        }
-        logger.debug("The person's info search was completed ");
-    }
-    catch (Exception ex) {
-        logger.error("Error fetching the list of  persons by their firstName", ex);
-    }
-    return listOfPersonSearch;
-}
-
-public List<Persons> getAllPersonsByCity(String city)
-{
-    try
+    public List<Persons> getPersonInfo(String firstName, String lastName)
     {
-        List<Persons> listOfAllPersons = jsonReaderFromURLIMPL.getPersons();
+        List<Persons> listOfPersonsByLastName = jsonReaderFromURLIMPL.getPersonByLastName(lastName);
+        List<Persons> listOfPersonSearch = new ArrayList<>();
+
+        try {
+            jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsByLastName);
+
+            for(Persons person : listOfPersonsByLastName)
+            {
+                String firstNamePerson = person.getFirstName();
+
+                if(firstName.equals(firstNamePerson))
+                {
+                    listOfPersonSearch.add(person);
+                }
+            }
+            logger.debug("The person's info search was completed ");
+        }
+        catch (Exception ex) {
+            logger.error("Error fetching the list of  persons by their firstName", ex);
+        }
+        return listOfPersonSearch;
+    }
+
+    public List<Persons> getAllPersonsByCity(String city)
+    {
         List<Persons> listOfPersonsWhoLiveInTheSelectedCity = new ArrayList<>();
-
-        for(Persons person : listOfAllPersons)
+        try
         {
-            String cityWhereLiveThePerson = person.getCity();
+            List<Persons> listOfAllPersons = jsonReaderFromURLIMPL.getPersons();
 
-            if(city.equals(cityWhereLiveThePerson))
+            for(Persons person : listOfAllPersons)
             {
-                listOfPersonsWhoLiveInTheSelectedCity.add(person);
+                String cityWhereLiveThePerson = person.getCity();
+
+                if(city.equals(cityWhereLiveThePerson))
+                {
+                    listOfPersonsWhoLiveInTheSelectedCity.add(person);
+                }
             }
+            logger.debug("the list of phone number by city was created");
         }
-return listOfPersonsWhoLiveInTheSelectedCity;
+        catch (Exception ex)
+        {
+            logger.error("Error fetching the list of  phone number by city", ex);
+        }
+        return listOfPersonsWhoLiveInTheSelectedCity;
     }
-    catch (Exception ex)
+
+    public void addANewPerson(Persons person)
     {
-        logger.error("Error fetching the list of  phone number by city", ex);
+        jsonReaderFromURLIMPL.saveNewPerson(person);
     }
-    return null;
-}
 
-public void addANewPerson(Persons person)
-{
-    jsonReaderFromURLIMPL.saveNewPerson(person);
-}
+    public void deleteThePerson(String firstName, String lastName)
+    {
+        jsonReaderFromURLIMPL.deletePerson(firstName, lastName);
+    }
 
-public void deleteThePerson(String firstName, String lastName)
-{
-    jsonReaderFromURLIMPL.deletePerson(firstName, lastName);
-}
-
-public void upDatePerson(Persons person)
-{
-    jsonReaderFromURLIMPL.upDatePersonInfo(person);
-}
-
-
-
+    public void upDatePerson(Persons person)
+    {
+        jsonReaderFromURLIMPL.upDatePersonInfo(person);
+    }
 }
 
 

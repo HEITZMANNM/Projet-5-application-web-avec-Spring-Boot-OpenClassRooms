@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 public class FireStations {
 
-    private int id;
-
     @JsonView(View.AddressFireStation.class)
     private String address;
 

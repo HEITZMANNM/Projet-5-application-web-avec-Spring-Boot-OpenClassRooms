@@ -59,7 +59,7 @@ public class View {
     }
     public interface MedicalRecordsFrontPersonFirstName extends FirstName, MedicalRecordsOnly{
     }
-    public interface FamilysPersonsCoveredByStationNumber extends MedicalRecordsFrontPersonFirstName, LastName, Age, Phone{
+    public interface FamiliesPersonsCoveredByStationNumber extends MedicalRecordsFrontPersonFirstName, LastName, Age, Phone{
     }
 
 

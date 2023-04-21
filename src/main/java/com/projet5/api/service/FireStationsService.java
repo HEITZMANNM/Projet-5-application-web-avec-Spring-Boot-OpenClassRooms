@@ -32,6 +32,8 @@ public class FireStationsService {
             listOfAddressCoveredBySelectedFireStation.add(addressCovered);
         }
 
+        logger.debug("the list of address covered by the fire station was created");
+
         return listOfAddressCoveredBySelectedFireStation;
     }
 
@@ -45,8 +47,6 @@ public class FireStationsService {
             List<FireStations> listOfFireStationSelected = jsonReaderFromURLIMPL.getFireStationByStationNumber(stationNumber);
 
             List<String> listOfAddressCoveredBySelectedFireStation = getAddressCoveredByFireStation(listOfFireStationSelected);
-
-
 
             for(String addressCovered : listOfAddressCoveredBySelectedFireStation)
             {
@@ -63,6 +63,7 @@ public class FireStationsService {
 
             numberOfAdultAtTheSelectedAddress = listOfPersonsCoveredBySelectedFireStation.size()-numberOfChildrenAtTheSelectedAddress;
 
+            logger.debug("the list of persons covered by fire station selected was created");
         }
         catch(Exception ex){
             logger.error("Error fetching the list of persons covered by fire station selected",ex);
@@ -85,6 +86,7 @@ public class FireStationsService {
 
                 listOfPersonsCoveredByFireStationNumber.addAll(listOfPersonWhoLiveAtThisAddress);
             }
+            logger.debug("the list of persons covered by fire station selected was created");
         }
         catch(Exception ex)
         {
@@ -95,6 +97,7 @@ public class FireStationsService {
 
     public FireStationNumberAndPersonsByAddress getPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem(String address)
     {
+        FireStationNumberAndPersonsByAddress fireStationNumberAndPersonsByAddress = new FireStationNumberAndPersonsByAddress();
         try
         {
             //create the list of persons who live at the address
@@ -102,29 +105,28 @@ public class FireStationsService {
             //recover the fire station which cover this address
             int fireStationNumberWhichCoverAddress = jsonReaderFromURLIMPL.getFireStationByAddress(address).getStation();
 
-
             //setup the list with age for each person
             jsonReaderFromURLIMPL.calculateAgeOfPersons(listOfPersonsWhoLiveAtTheAddress);
 
-            FireStationNumberAndPersonsByAddress fireStationNumberAndPersonsByAddress = new FireStationNumberAndPersonsByAddress(listOfPersonsWhoLiveAtTheAddress, fireStationNumberWhichCoverAddress);
+           fireStationNumberAndPersonsByAddress.setListOfPersonWithMedicalRecords(listOfPersonsWhoLiveAtTheAddress);
+           fireStationNumberAndPersonsByAddress.setFireStationNumber(fireStationNumberWhichCoverAddress);
 
-            return fireStationNumberAndPersonsByAddress;
+            logger.debug("The list of persons who live at address and the fire station which cover them was create");
         }
         catch(Exception ex)
         {
             logger.error("Error fetching the list of persons who live at address and the fire station which cover them",ex);
         }
-        return null;
+        return fireStationNumberAndPersonsByAddress;
     }
 
     public List<List<Persons>> getFamiliesCoveredByFireStationNumber(int stationNumber)
     {
+        List<List<Persons>> listOfPersonsOfFamiliesCovered = new ArrayList<>();
         try
         {
             List<Persons> listOfPersonsCoveredByStationNumber = getPersonsCoveredByFireStationNumber(stationNumber);
             List<String> listOfLastNameOfFamilies = new ArrayList<>();
-
-            List<List<Persons>> listOfPersonsOfFamiliesCovered = new ArrayList<>();
 
             for (Persons person : listOfPersonsCoveredByStationNumber)
             {
@@ -152,22 +154,23 @@ public class FireStationsService {
                     jsonReaderFromURLIMPL.calculateAgeOfPersons(list);
                 }
             }
-return listOfPersonsOfFamiliesCovered;
+            logger.debug("the list of families covered by fire station number was created");
         }
         catch(Exception ex)
         {
             logger.error("Error fetching the list of families covered by fire station number",ex);
         }
-        return null;
+        return listOfPersonsOfFamiliesCovered;
     }
 
     public void addANewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException {
         jsonReaderFromURLIMPL.saveNewFireStation(fireStation);
     }
 
-    public void deleteFireStation(String address, int sattionNumber) throws JSONException, JsonProcessingException {
-        jsonReaderFromURLIMPL.deleteFireStation(sattionNumber, address);
+    public void deleteFireStation(String address, int stationNumber) throws JSONException, JsonProcessingException {
+        jsonReaderFromURLIMPL.deleteFireStation(stationNumber, address);
     }
+
 
     public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException {
         jsonReaderFromURLIMPL.upDateStationNumber(address, stationNumber);
