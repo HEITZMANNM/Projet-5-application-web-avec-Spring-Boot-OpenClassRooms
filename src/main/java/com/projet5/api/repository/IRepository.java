@@ -38,7 +38,9 @@ public interface IRepository {
 
     public void saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException;
 
-    public void deleteFireStation(int stationNumber, String address) throws JSONException, JsonProcessingException;
+    public void deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException;
+
+    public void deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException;
 
     public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException;
 

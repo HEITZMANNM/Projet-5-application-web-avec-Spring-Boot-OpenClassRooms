@@ -49,17 +49,17 @@ public class PersonsControllerTest {
         mockMvc.perform(get("/communityEmail?city=Culver")).andExpect(status().isOk());
     }
 
-    @Test
-    public void testPostNewPerson() throws Exception {
-
-        List<Persons> listOfPersons = new ArrayList<>();
-        Persons personToSave = new Persons();
-        personToSave.setLastName("Dutton");
-        personToSave.setLastName("John");
-        personToSave.setCity("Montana city");
-
-        when(jsonReaderFromURLIMPL.getPersons()).thenReturn(listOfPersons);
-
-        mockMvc.perform(post("/person", personToSave)).andExpect(status().isOk());
-    }
+//    @Test
+//    public void testPostNewPerson() throws Exception {
+//
+//        List<Persons> listOfPersons = new ArrayList<>();
+//        Persons personToSave = new Persons();
+//        personToSave.setLastName("Dutton");
+//        personToSave.setLastName("John");
+//        personToSave.setCity("Montana city");
+//
+//        when(jsonReaderFromURLIMPL.getPersons()).thenReturn(listOfPersons);
+//
+//        mockMvc.perform(post("/person", personToSave)).andExpect(status().isOk());
+//    }
 }

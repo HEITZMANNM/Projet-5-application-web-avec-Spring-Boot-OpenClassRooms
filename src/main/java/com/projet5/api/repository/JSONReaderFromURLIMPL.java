@@ -512,38 +512,63 @@ public class JSONReaderFromURLIMPL implements IRepository{
     }
 
     @Override
-    public void deleteFireStation(int stationNumber, String address) throws JSONException, JsonProcessingException {
+    public void deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException {
         if (listOfAllFireStations.isEmpty())
         {
             listOfAllFireStations = getFireStations();
         }
+        List<Integer> listOfIndexToRemove = new ArrayList<>();
         try
         {
-            for(FireStations fireStations : listOfAllFireStations)
+            for(FireStations fireStation : listOfAllFireStations)
             {
-                String addressTarget=fireStations.getAddress();
-                int stationNumberTarget=fireStations.getStation();
+                int stationNumberOfSelectedFireStation = fireStation.getStation();
 
-                if(!address.isEmpty())
+                if(stationNumberOfSelectedFireStation==stationNumber)
                 {
-                    if(address.equals(addressTarget))
-                    {
-                        int indexOfStation = listOfAllFireStations.indexOf(fireStations);
-                        listOfAllPersons.remove(indexOfStation);
-                        logger.debug("The fire station was delete");
-                    }
-                }
-                else
-                {
-                    if(stationNumber==stationNumberTarget)
-                    {
-                        int indexOfStation = listOfAllFireStations.indexOf(fireStations);
-                        listOfAllPersons.remove(indexOfStation);
-                        logger.debug("The fire station was delete");
-                    }
+                    int indexOfStation = listOfAllFireStations.indexOf(fireStation);
+                    listOfIndexToRemove.add(indexOfStation);
                 }
             }
+            for(int index : listOfIndexToRemove)
+            {
+                listOfAllFireStations.remove(index);
+                logger.debug("The fire station was delete");
+            }
+        }
+        catch(Exception ex){
+            logger.error("Error delete the fire station by its station number",ex);
+        }
+    }
 
+
+
+    @Override
+    public void deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException {
+        if (listOfAllFireStations.isEmpty())
+        {
+            listOfAllFireStations = getFireStations();
+        }
+
+        List<Integer> listOfIndexToRemove = new ArrayList<>();
+
+        try
+        {
+            for(FireStations fireStation : listOfAllFireStations)
+            {
+                String addressOfFireStationSelected=fireStation.getAddress();
+
+                if(address.equals(addressOfFireStationSelected))
+                {
+                    int indexOfStation = listOfAllFireStations.indexOf(fireStation);
+                    listOfIndexToRemove.add(indexOfStation);
+                }
+            }
+            for(int index : listOfIndexToRemove)
+            {
+                listOfAllFireStations.remove(index);
+                logger.debug("The fire station was delete");
+            }
         }
         catch(Exception ex){
             logger.error("Error delete the fire station ",ex);

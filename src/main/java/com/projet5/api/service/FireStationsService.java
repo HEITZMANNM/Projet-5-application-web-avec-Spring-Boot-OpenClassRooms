@@ -167,10 +167,13 @@ public class FireStationsService {
         jsonReaderFromURLIMPL.saveNewFireStation(fireStation);
     }
 
-    public void deleteFireStation(String address, int stationNumber) throws JSONException, JsonProcessingException {
-        jsonReaderFromURLIMPL.deleteFireStation(stationNumber, address);
+    public void deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException {
+        jsonReaderFromURLIMPL.deleteFireStationByStationNumber(stationNumber);
     }
 
+    public void deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException {
+        jsonReaderFromURLIMPL.deleteFireStationByAddress(address);
+    }
 
     public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException {
         jsonReaderFromURLIMPL.upDateStationNumber(address, stationNumber);

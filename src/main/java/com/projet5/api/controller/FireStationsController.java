@@ -50,13 +50,30 @@ public class FireStationsController {
     }
 
 
-    @DeleteMapping("/firestation")
-    public void deleteFireStation(@RequestParam(required = false )int stationNumber, @RequestParam(required = false) String address) throws JSONException, JsonProcessingException {
-        fireStationsService.deleteFireStation(address, stationNumber);
+    @DeleteMapping("/firestationByStationNumber")
+    public void deleteFireStationByStationNumber(@RequestParam int stationNumber) throws JSONException, JsonProcessingException {
+        fireStationsService.deleteFireStationByStationNumber(stationNumber);
+    }
+
+    @DeleteMapping("/firestationByAddress")
+    public void deleteFireStationByAddress(@RequestParam String address) throws JSONException, JsonProcessingException {
+        fireStationsService.deleteFireStationByAddress(address);
     }
 
     @PutMapping("/firestation")
     public void upDateStationNumber(@RequestParam(name = "address") String address, @RequestParam(name = "stationNumber") int stationNumberToChange) throws JSONException, JsonProcessingException {
         fireStationsService.upDateStationNumber(address, stationNumberToChange);
     }
+
+
+
+
+
+
+    //pour tester
+    @GetMapping("/firestationAll")
+    public List<FireStations> getAllFireStations() throws JSONException, JsonProcessingException {
+        return fireStationsService.getAllFireStation();
+    }
+
 }
