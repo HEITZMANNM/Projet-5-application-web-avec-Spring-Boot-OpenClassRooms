@@ -88,15 +88,6 @@
 			<version>0.8.8</version>
 			<type>maven-plugin</type>
 		</dependency>
-
-
-
-
-
-
-
-
-
     </dependencies>
 
 	<build>

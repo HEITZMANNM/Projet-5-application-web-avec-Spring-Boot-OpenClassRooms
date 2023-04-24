@@ -7,13 +7,14 @@ import com.projet5.api.model.PeopleCoveredByFireStationAndNumberOfChildren;
 import com.projet5.api.model.Persons;
 import com.projet5.api.service.FireStationsService;
 import org.json.JSONException;
-import org.junit.Test;
-//import org.junit.jupiter.api.Test;
+//import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,11 +27,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FireStationServiceTest
 {
 
-    @Mock
+    @Mock(lenient = true)
     private  JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
     private List<FireStations> listOfFireStationByNumber3;

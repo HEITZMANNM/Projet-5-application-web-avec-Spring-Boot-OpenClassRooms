@@ -103,51 +103,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
         return listOfAllPersons;
     }
 
-//    public List<Persons> setPersonsMedicalRecords(List<Persons> listOfPersons)
-//    {
-//        try{
-//            List<MedicalRecords> listOfMedicalRecords = getMedicalRecords();
-//
-//            for(MedicalRecords medicalRecord : listOfMedicalRecords)
-//            {
-//                String medicalRecordFirstName = medicalRecord.getFirstName();
-//                String medicalRecordLastName = medicalRecord.getLastName();
-//
-//                listOfPersons.stream().filter(p -> p.getFirstName().equals(medicalRecordFirstName) && p.getLastName().equals(medicalRecordLastName)).
-//                        forEach(p -> p.setMedicalRecords(medicalRecord));
-//            }
-//return listOfPersons;
-//        }
-//        catch (Exception ex)
-//        {
-//            logger.error("Error fetching the list of Person with their medical records", ex);
-//        }
-//        return null;
-//    }
 
-    //    @Override
-//    public List<Persons> calculateAgeOfPersons(List<Persons> listOfPersons)
-//    {
-//        try
-//        {
-//for (Persons person : listOfPersons)
-//{
-//    Date nowDate = new Date();
-//    String birthdateString = person.getMedicalRecords().getBirthdate();
-//    Date birthdateDate = new SimpleDateFormat("dd/MM/yyyy").parse(birthdateString);
-//
-//    Double ageInDouble = (nowDate.getTime()-birthdateDate.getTime())/3.154e+10;
-//    int age =  ageInDouble.intValue();
-//
-//    person.setAge(age);
-//}
-//        }
-//        catch (Exception ex)
-//        {
-//            logger.error("Error calculation for the age of each persons", ex);
-//        }
-//        return null;
-//    }
     @Override
     public List<Persons> getPersonByLastName(String lastName){
         if (listOfAllPersons.isEmpty())
@@ -243,7 +199,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
                 MedicalRecords medicalRecordObject = objectMapper.readValue(medicalRecordConvertToString, MedicalRecords.class);
                 listOfAllMedicalRecords.add(medicalRecordObject);
             }
-
             return listOfAllMedicalRecords;
         }
         catch(Exception ex){
@@ -307,6 +262,10 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public List<MedicalRecords> getMedicalRecordsByAddress(String address) {
 
+        if (listOfAllMedicalRecords.isEmpty())
+        {
+            getMedicalRecords();
+        }
         //crete the list of medical records of the address
         List<MedicalRecords> listOfMedicalRecordsByAddress = new ArrayList<>();
 
@@ -314,7 +273,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
             //crete list of all persons which live in the address
             List<Persons> listOfPersonsWhoLiveInAddress = getAllPersonsByAddress(address);
             //crete list of all medical records
-            List<MedicalRecords> listOfAllMedicalRecords = getMedicalRecords();
 
 
             for (Persons person : listOfPersonsWhoLiveInAddress) {
@@ -365,61 +323,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
     }
 
 
-
-
-
-    public String convertPersonToJson(Persons person)
-    {
-//            // Creating object of Organisation
-//            Organisation org = new Organisation();
-//
-//            // Insert the data into the object
-//            org = getObjectData(org);
-
-        // Creating Object of ObjectMapper define in Jackson
-        // Api
-        ObjectMapper Obj = new ObjectMapper();
-
-        // Try block to check for exceptions
-        try {
-
-            // Getting organisation object as a json string
-            String personJsonStr = Obj.writeValueAsString(person);
-
-            // Displaying JSON String on console
-            System.out.println(personJsonStr);
-
-            return personJsonStr;
-        }
-
-        // Catch block to handle exceptions
-        catch (IOException e) {
-
-            // Display exception along with line number
-            // using printStackTrace() method
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-//        // Method
-//        // Getting the data to be inserted
-//        // into the object
-//        public static Organisation
-//        getObjectData(Organisation org)
-//        {
-//
-//            // Insert the custom data
-//            org.setName("GeeksforGeeks");
-//            org.setDescription(
-//                    "A computer Science portal for Geeks");
-//            org.setEmployees(2000);
-//
-//            // Returning the object
-//            return org;
-//        }
-
-
     @Override
     public void saveNewPerson(Persons person)
     {
@@ -444,6 +347,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
         {
             listOfAllPersons = getPersons();
         }
+
+        List<Integer> listOfIndexToRemove = new ArrayList<>();
+
         try
         {
             for(Persons person : listOfAllPersons)
@@ -453,9 +359,14 @@ public class JSONReaderFromURLIMPL implements IRepository{
                 if(firstNamePerson.equals(firstName) && lastNamePerson.equals(lastName))
                 {
                     int indexOfPerson = listOfAllPersons.indexOf(person);
-                    listOfAllPersons.remove(indexOfPerson);
-                    logger.debug("The person was delete");
+
+                    listOfIndexToRemove.add(indexOfPerson);
                 }
+            }
+            for (int indexOfPerson : listOfIndexToRemove)
+            {
+                listOfAllPersons.remove(indexOfPerson);
+                logger.debug("The person was delete");
             }
         }
         catch(Exception ex){

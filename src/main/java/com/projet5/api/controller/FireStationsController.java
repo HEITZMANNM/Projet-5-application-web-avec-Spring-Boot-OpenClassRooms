@@ -71,9 +71,9 @@ public class FireStationsController {
 
 
     //pour tester
-    @GetMapping("/firestationAll")
-    public List<FireStations> getAllFireStations() throws JSONException, JsonProcessingException {
-        return fireStationsService.getAllFireStation();
-    }
+//    @GetMapping("/firestationAll")
+//    public List<FireStations> getAllFireStations() throws JSONException, JsonProcessingException {
+//        return fireStationsService.getAllFireStation();
+//    }
 
 }

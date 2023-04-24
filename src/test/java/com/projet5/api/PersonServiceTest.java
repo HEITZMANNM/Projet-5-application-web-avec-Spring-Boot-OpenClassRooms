@@ -9,7 +9,10 @@ import org.json.JSONException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+
+
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
@@ -30,7 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
 
     private  PersonsService personsService;
@@ -39,7 +42,7 @@ public class PersonServiceTest {
 
     private List<Persons> listOfAllPersons;
 
-    @Mock
+    @Mock(lenient = true)
     private  JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
 
