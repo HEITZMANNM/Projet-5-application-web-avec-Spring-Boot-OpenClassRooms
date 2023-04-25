@@ -183,10 +183,10 @@ public class FireStationsService {
 
 
 
-//Pour Tester
-    public List<FireStations> getAllFireStation() throws JSONException, JsonProcessingException {
-        return jsonReaderFromURLIMPL.getFireStations();
-    }
+////Pour Tester
+//    public List<FireStations> getAllFireStation() throws JSONException, JsonProcessingException {
+//        return jsonReaderFromURLIMPL.getFireStations();
+//    }
 
 
 

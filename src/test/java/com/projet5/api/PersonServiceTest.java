@@ -47,6 +47,7 @@ public class PersonServiceTest {
 
 
     //creat a list with one child and two adult at the same address which will used to test the different methods of personService
+    @BeforeEach
     private void setUp()
     {
         listOfPersonsByAddress = new ArrayList<>();
@@ -121,7 +122,6 @@ public class PersonServiceTest {
     public void testTheImplementationOfListOfChildrenByAddress() throws JSONException, IOException {
         String address = "11 way of Yellowstone";
 
-        setUp();
 
         ListOfChildrenAndAdultsByAddress listExpected = personsService.getChildrenAtAddressAndTheOtherMemberOfFamily(address);
 
@@ -130,12 +130,10 @@ public class PersonServiceTest {
 
     }
 
-//Control if the method getPersonInfo() return a list with the Person search in terms of lastName and FirstName
+    //Control if the method getPersonInfo() return a list with the Person search in terms of lastName and FirstName
     @Test
     public void testIfTheInfoOfOneSearchPersonIsCorrect()
     {
-
-        setUp();
 
         String firstNameSearch = "Beth";
         String lastNameSearch = "Dutton";
@@ -153,10 +151,13 @@ public class PersonServiceTest {
     {
         String citySearch = "MontanaCity";
 
-        setUp();
+
 
         List<Persons> listOfPersonsWhoLiveInTheSameCity = personsService.getAllPersonsByCity(citySearch);
 
         assertEquals(listOfPersonsWhoLiveInTheSameCity.size(), 3);
     }
+
+
+
 }
