@@ -10,7 +10,15 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+
+
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -38,11 +46,18 @@ public class PersonsController {
     }
 
     @PostMapping("/person")
-    public void postNewPerson(@RequestBody Persons person)
+    public ResponseEntity<Void> postNewPerson(@RequestBody Persons person)
     {
+      personsService.addANewPerson(person);
 
-        personsService.addANewPerson(person);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/personInfo?firstName={}&lastName={}")
+                .buildAndExpand(person.getFirstName(), person.getLastName())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
+
     @DeleteMapping("/person")
     public void deletePerson(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
     {

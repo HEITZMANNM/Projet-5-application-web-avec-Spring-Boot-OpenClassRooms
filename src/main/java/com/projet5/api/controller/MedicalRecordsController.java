@@ -6,8 +6,11 @@ import com.projet5.api.model.MedicalRecords;
 import com.projet5.api.service.MedicalRecordsService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,10 +19,25 @@ public class MedicalRecordsController {
     @Autowired
     MedicalRecordsService medicalRecordsService;
 
+    @GetMapping("/medicalRecord")
+    public void getAllMedicalRecords()
+    {
+        medicalRecordsService.getAllMedicalRecords();
+    }
+
     @PostMapping("/medicalRecord")
-    public void saveNewMedicalRecords(@RequestBody MedicalRecords medicalRecord)
+    public ResponseEntity<Void> saveNewMedicalRecords(@RequestBody MedicalRecords medicalRecord)
     {
         medicalRecordsService.saveNewMedicalRecords(medicalRecord);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/medicalRecord")
+                .buildAndExpand(medicalRecord.getLastName())
+                .toUri();
+        return ResponseEntity.created(location).build();
+
+
     }
 
     @PutMapping("/medicalRecord")

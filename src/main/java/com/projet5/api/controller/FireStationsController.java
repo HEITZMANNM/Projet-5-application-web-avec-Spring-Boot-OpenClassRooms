@@ -6,9 +6,12 @@ import com.projet5.api.model.*;
 import com.projet5.api.service.FireStationsService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +48,15 @@ public class FireStationsController {
     }
 
     @PostMapping("/firestation")
-    public void saveNewFireStation (@RequestBody FireStations fireStation) throws JSONException, JsonProcessingException {
+    public ResponseEntity<Void> saveNewFireStation (@RequestBody FireStations fireStation) throws JSONException, JsonProcessingException {
         fireStationsService.addANewFireStation(fireStation);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/fire?address={}")
+                .buildAndExpand(fireStation.getAddress())
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 
 

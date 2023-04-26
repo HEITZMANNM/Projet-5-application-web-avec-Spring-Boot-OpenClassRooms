@@ -7,6 +7,7 @@ import com.projet5.api.model.Persons;
 import com.projet5.api.model.View;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
 import com.projet5.api.service.PersonsService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //import static org.hamcrest.Matchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,9 +50,23 @@ public class PersonsControllerTest {
     private JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
     @Test
+    public void schouldCreateMockMvc()
+    {
+        assertNotNull(mockMvc);
+    }
+
+    @Test
     public void testGetChildrenAtTheAddressAndOtherMemberOfFamily() throws Exception {
+
+//        List<Persons>listOfAllPersons = new ArrayList<>();
+//        listOfAllPersons.add(new Persons("Beth", "Dutton", "11 yellowstone way","Montana city",0, null, null, null, null, 10));
+//
+//        when(jsonReaderFromURLIMPL.getAllPersonsByAddress(anyString())).thenReturn(listOfAllPersons);
+
+
         mockMvc.perform(get("/childAlert?address=1509 Culver St"))
                 .andExpect(status().isOk());
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstName()").value("Beth"));
     }
 
     @Test
@@ -62,32 +79,26 @@ public class PersonsControllerTest {
         mockMvc.perform(get("/communityEmail?city=Culver")).andExpect(status().isOk());
     }
 
-//    @Test
-//    public void testPostNewPerson() throws Exception {
-//
-//        List<Persons> listOfPersons = new ArrayList<>();
-//        Persons personToSave = new Persons();
-//        personToSave.setLastName("Dutton");
-//        personToSave.setLastName("John");
-//        personToSave.setCity("Montana city");
+    @Test
+    public void testPostNewPerson() throws Exception {
 
 
-//        when(jsonReaderFromURLIMPL.getPersons()).thenReturn(listOfPersons);
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/person")
+                        .content(asJsonString(new Persons("Beth", "Dutton", "11 yellowstone way","Montana city",0, null, null, null, null, 40)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
 
-//        mockMvc.perform(post("/person", personToSave)).andExpect(status().isCreated());
-//
-//
-//        MockHttpServletRequest request = new MockHttpServletRequest();
-//        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-//
-//        when(jsonReaderFromURLIMPL.saveNewPerson(any(Persons.class).thenReturn(true);
-//
-//
-//        ResponseEntity<Object> responseEntity = personsService.addANewPerson(personToSave);
-//
-//        assertThat(responseEntity.getStatusCodeValue()).isEqualTo(201);
-//        assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("/1");
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
+    }
     }
 
 

@@ -21,6 +21,10 @@ public class MedicalRecordsService {
 
     private static final Logger logger = LogManager.getLogger("Medical Records service");
 
+    public List<MedicalRecords> getAllMedicalRecords()
+    {
+       return jsonReaderFromURLIMPL.getMedicalRecords();
+    }
     public void saveNewMedicalRecords(MedicalRecords medicalRecord)
     {
         jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecord);
