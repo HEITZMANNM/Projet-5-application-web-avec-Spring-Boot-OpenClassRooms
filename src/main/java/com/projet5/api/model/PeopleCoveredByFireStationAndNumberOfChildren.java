@@ -6,9 +6,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
+@JsonView(View.PersonsFirstNameLastNameAddressAndPhoneOnly.class)
 public class PeopleCoveredByFireStationAndNumberOfChildren {
 
-@JsonView(View.PeopleCoveredByFireStationNumber.class)
     List<Persons> listOfPersonsCovered;
 
     int numberOfChildren;
@@ -24,6 +24,5 @@ public class PeopleCoveredByFireStationAndNumberOfChildren {
 
     public PeopleCoveredByFireStationAndNumberOfChildren()
     {
-
     }
 }

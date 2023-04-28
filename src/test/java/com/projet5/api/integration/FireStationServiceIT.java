@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class FireStationServiceIT {
 
@@ -51,7 +52,8 @@ public class FireStationServiceIT {
 
         FireStations fireStationSearch = fireStationsService.getJsonReaderFromURLIMPL().getFireStationByAddress("22 Tortuga street");
 
-        assertEquals(fireStationSearch, null);
+        assertEquals(fireStationSearch.getStation(), 0);
+        assertNull(fireStationSearch.getAddress());
 
     }
 
@@ -64,7 +66,8 @@ public class FireStationServiceIT {
 
         FireStations fireStationSearch = fireStationsService.getJsonReaderFromURLIMPL().getFireStationByAddress("22 Tortuga street");
 
-        assertEquals(fireStationSearch, null);
+        assertEquals(fireStationSearch.getStation(), 0);
+        assertNull(fireStationSearch.getAddress());
     }
 
     //test to upDate FireStation's number

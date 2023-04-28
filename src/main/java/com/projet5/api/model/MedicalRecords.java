@@ -3,7 +3,6 @@ package com.projet5.api.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 @Data

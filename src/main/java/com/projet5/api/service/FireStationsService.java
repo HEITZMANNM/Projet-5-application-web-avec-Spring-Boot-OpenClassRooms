@@ -2,8 +2,8 @@ package com.projet5.api.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.projet5.api.model.*;
+import com.projet5.api.repository.IRepository;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,13 +15,23 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-@Data
+
 @Service
 public class FireStationsService {
 
     private static final Logger logger = LogManager.getLogger("FireStationsService");
     @Autowired
     JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
+
+    public void setJsonReaderFromURLIMPL(IRepository repository)
+    {
+        this.jsonReaderFromURLIMPL= (JSONReaderFromURLIMPL) repository;
+    }
+
+    public JSONReaderFromURLIMPL getJsonReaderFromURLIMPL()
+    {
+        return jsonReaderFromURLIMPL;
+    }
 
     public List<String> getAddressCoveredByFireStation(List<FireStations> listOfFireStationSelected)
     {
@@ -130,10 +140,10 @@ public class FireStationsService {
 
             for (Persons person : listOfPersonsCoveredByStationNumber)
             {
-                String lastNameofFamily = person.getLastName();
-                if (!listOfLastNameOfFamilies.contains(lastNameofFamily))
+                String lastNameOfFamily = person.getLastName();
+                if (!listOfLastNameOfFamilies.contains(lastNameOfFamily))
                 {
-                    listOfLastNameOfFamilies.add(lastNameofFamily);
+                    listOfLastNameOfFamilies.add(lastNameOfFamily);
                     List<Persons> listOfPersonsOfSameFamily = new ArrayList<>();
                     listOfPersonsOfSameFamily.add(person);
                     listOfPersonsOfFamiliesCovered.add(listOfPersonsOfSameFamily);
@@ -142,7 +152,7 @@ public class FireStationsService {
                 {
                     for(List<Persons> list : listOfPersonsOfFamiliesCovered)
                     {
-                        if (list.get(0).getLastName().equals(lastNameofFamily))
+                        if (list.get(0).getLastName().equals(lastNameOfFamily))
                         {
                             list.add(person);
                         }

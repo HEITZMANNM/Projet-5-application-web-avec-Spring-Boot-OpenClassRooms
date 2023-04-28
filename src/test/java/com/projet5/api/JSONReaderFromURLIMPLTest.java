@@ -318,7 +318,8 @@ public class JSONReaderFromURLIMPLTest {
 
         FireStations fireStationByAddress = jsonReaderFromURLIMPL.getFireStationByAddress("22 yellowstone street");
 
-        assertNull(fireStationByAddress);
+        assertEquals(fireStationByAddress.getStation(), 0);
+        assertNull(fireStationByAddress.getAddress());
     }
 
     //test to delete a fireStation by its station number

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
@@ -40,7 +41,8 @@ public class FireStationServiceTest
 
     private List<Persons> listOfPersonsByAddress;
 
-    private FireStationsService fireStationsService;
+    @InjectMocks
+    private FireStationsService fireStationsService = new FireStationsService();
 
     //create fireStations and List of people used to test the different method of fireStationService
     public void setUp() throws JSONException, JsonProcessingException {
@@ -75,7 +77,6 @@ public class FireStationServiceTest
 
         listOfFireStationByNumber4.add(fireStationsThree);
 
-        fireStationsService = new FireStationsService();
 
         Persons child = new Persons();
         Persons father = new Persons();
@@ -112,7 +113,6 @@ public class FireStationServiceTest
         listOfPersonsByAddress.add(father);
         listOfPersonsByAddress.add(mother);
 
-        fireStationsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
 
         when(jsonReaderFromURLIMPL.getFireStationByStationNumber(anyInt())).thenReturn(listOfFireStationByNumber4);
         when(jsonReaderFromURLIMPL.getAllPersonsByAddress(anyString())).thenReturn(listOfPersonsByAddress);
@@ -172,13 +172,4 @@ public class FireStationServiceTest
         assertEquals(listOfFamiliesCovered.size(), 1);
         assertEquals(listOfFamiliesCovered.get(0).size(), 3);
     }
-
-
-
-
-
-
-
-
-
 }

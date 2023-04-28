@@ -1,24 +1,20 @@
 package com.projet5.api.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.projet5.api.model.*;
+import com.projet5.api.model.ListOfChildrenAndAdultsByAddress;
+import com.projet5.api.model.Persons;
+import com.projet5.api.repository.IRepository;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.json.JSONException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-@Data
+
 @Service
 public class PersonsService {
 
@@ -26,6 +22,16 @@ public class PersonsService {
 
     @Autowired
     JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
+
+    public void setJsonReaderFromURLIMPL(IRepository repository)
+    {
+        this.jsonReaderFromURLIMPL= (JSONReaderFromURLIMPL) repository;
+    }
+
+    public JSONReaderFromURLIMPL getJsonReaderFromURLIMPL()
+    {
+        return jsonReaderFromURLIMPL;
+    }
 
 
     public ListOfChildrenAndAdultsByAddress getChildrenAtAddressAndTheOtherMemberOfFamily(String address) throws JSONException, IOException
@@ -52,6 +58,10 @@ public class PersonsService {
                 else {
                     listOfAdult.add(person);
                 }
+            }
+            if(listOfChildren.isEmpty())
+            {
+                return null;
             }
             listOfChildrenAndAdultsByAddress.setListOfChildren(listOfChildren);
             listOfChildrenAndAdultsByAddress.setListOfAdults(listOfAdult);
@@ -125,10 +135,15 @@ public class PersonsService {
         jsonReaderFromURLIMPL.deletePerson(firstName, lastName);
     }
 
-    public void upDatePerson(Persons person)
+    public void updatePerson(Persons person)
     {
         jsonReaderFromURLIMPL.upDatePersonInfo(person);
     }
+
+
+
+
+
 }
 
 

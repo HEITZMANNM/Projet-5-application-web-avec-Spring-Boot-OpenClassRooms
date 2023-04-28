@@ -1,17 +1,17 @@
 package com.projet5.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.projet5.api.model.FireStations;
+
 import com.projet5.api.model.MedicalRecords;
 import com.projet5.api.service.MedicalRecordsService;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+
 
 @RestController
 public class MedicalRecordsController {
@@ -20,9 +20,9 @@ public class MedicalRecordsController {
     MedicalRecordsService medicalRecordsService;
 
     @GetMapping("/medicalRecord")
-    public void getAllMedicalRecords()
+    public List<MedicalRecords> getAllMedicalRecords()
     {
-        medicalRecordsService.getAllMedicalRecords();
+       return medicalRecordsService.getAllMedicalRecords();
     }
 
     @PostMapping("/medicalRecord")
@@ -41,14 +41,23 @@ public class MedicalRecordsController {
     }
 
     @PutMapping("/medicalRecord")
-    public void upDateMedicalRecords(@RequestBody MedicalRecords medicalRecord)
+    public MedicalRecords upDateMedicalRecords(@RequestBody MedicalRecords medicalRecord)
     {
         medicalRecordsService.upDateMedicalRecords(medicalRecord);
+
+        return medicalRecord;
     }
 
     @DeleteMapping("/medicalRecord")
-    public void deleteMedicalRecords(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
+    public ResponseEntity<HttpStatus>  deleteMedicalRecords(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
     {
         medicalRecordsService.deleteMedicalRecords(firstName, lastName);
+
+        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+    }
+
+    public void setMedicalRecordsService(MedicalRecordsService medicalRecordsService) {
+        this.medicalRecordsService = medicalRecordsService;
     }
 }
+

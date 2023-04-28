@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
@@ -16,8 +15,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-
 
 
 @Repository
@@ -34,6 +31,12 @@ public class JSONReaderFromURLIMPL implements IRepository{
     public List<FireStations> getListOAllFireStations(){ return listOfAllFireStations; }
     public List<MedicalRecords> getListOfAllMedicalRecords(){return listOfAllMedicalRecords;}
 
+    public List<MedicalRecords> setListOfAllMedicalRecords(List<MedicalRecords> listOfAllMedicalRecords)
+    {
+        return this.listOfAllMedicalRecords = listOfAllMedicalRecords;
+    }
+
+    //method that reads the url and converts to json
     @Override
     public JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
         InputStream is = new URL(url).openStream();
@@ -56,21 +59,26 @@ public class JSONReaderFromURLIMPL implements IRepository{
         return sb.toString();
     }
 
+    //method which get all person from the url and convert it in jsonArray
     @Override
-    public JSONArray getPersonsJson() {
+    public JSONArray getPersonsJson() throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+
         try {
             String url = "https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DA+Java+EN/P5+/data.json";
-            JSONObject jsonObject = readJsonFromUrl(url);
-            return jsonObject.getJSONArray("persons");
+            jsonObject = readJsonFromUrl(url);
+
 
         }
         catch (Exception ex) {
             logger.error("Error fetching the Json list of Person", ex);
         }
 
-        return null;
+        return jsonObject.getJSONArray("persons");
     }
 
+    //method which convert the jsonArray of all persons in a list of model Persons
     @Override
     public List<Persons> getPersons(){
 
@@ -106,13 +114,12 @@ public class JSONReaderFromURLIMPL implements IRepository{
         return listOfAllPersons;
     }
 
-
+    //
     @Override
     public List<Persons> getPersonByLastName(String lastName){
-        if (listOfAllPersons.isEmpty())
-        {
+
             listOfAllPersons = getPersons();
-        }
+
 
         List<Persons> listOfPersonsWithTheSameLastName = new ArrayList<>();
         try {
@@ -153,10 +160,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
     @Override
     public List<Persons> getAllPersonsByAddress(String address) throws JSONException, JsonProcessingException {
-        if(listOfAllPersons.isEmpty())
-        {
+
             listOfAllPersons = getPersons();
-        }
+
 
         List<Persons> listOfPersonByAddress = new ArrayList<>();
 
@@ -174,25 +180,34 @@ public class JSONReaderFromURLIMPL implements IRepository{
     }
 
     @Override
-    public JSONArray getMedicalRecordsJson() {
+    public JSONArray getMedicalRecordsJson() throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+
         try {
             String url = "https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DA+Java+EN/P5+/data.json";
-            JSONObject jsonObject = readJsonFromUrl(url);
-            return jsonObject.getJSONArray("medicalrecords");
+            jsonObject = readJsonFromUrl(url);
+
 
         }
         catch(Exception ex){
             logger.error("Error fetching the list of JSON Medical Records",ex);
         }
 
-        return null;
+        return jsonObject.getJSONArray("medicalrecords");
     }
 
     @Override
     public List<MedicalRecords> getMedicalRecords() {
+
+        if(!getListOfAllMedicalRecords().isEmpty())
+        {
+            return getListOfAllMedicalRecords();
+        }
+
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            List<MedicalRecords> listOfAllMedicalRecords = new ArrayList<>();
+
             JSONArray jsonArray = getMedicalRecordsJson();
 
 //        for(Object jsonMedicalRecord : jsonArray)
@@ -202,25 +217,28 @@ public class JSONReaderFromURLIMPL implements IRepository{
                 MedicalRecords medicalRecordObject = objectMapper.readValue(medicalRecordConvertToString, MedicalRecords.class);
                 listOfAllMedicalRecords.add(medicalRecordObject);
             }
-            return listOfAllMedicalRecords;
         }
         catch(Exception ex){
             logger.error("Error fetching the list of Medical Records",ex);
         }
-        return null;
+        setListOfAllMedicalRecords(listOfAllMedicalRecords);
+        return listOfAllMedicalRecords;
     }
     @Override
-    public JSONArray getFireStationsJson() {
+    public JSONArray getFireStationsJson() throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+
         try {
             String url = "https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DA+Java+EN/P5+/data.json";
-            JSONObject jsonObject = readJsonFromUrl(url);
-            return jsonObject.getJSONArray("firestations");
+            jsonObject = readJsonFromUrl(url);
+
         }
         catch(Exception ex){
             logger.error("Error fetching the list of Fire Stations",ex);
         }
 
-        return null;
+        return jsonObject.getJSONArray("firestations");
     }
 
     @Override
@@ -243,32 +261,30 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public FireStations getFireStationByAddress(String address) throws JSONException, JsonProcessingException {
 
-        if(listOfAllFireStations.isEmpty())
-        {
+        FireStations fireStationSearch = new FireStations();
+
             //create the list of all fire stations
             listOfAllFireStations = getFireStations();
-        }
+
         try {
             for (FireStations fireStation : listOfAllFireStations) {
                 if (fireStation.getAddress().equals(address)) {
-                    return fireStation;
+                    fireStationSearch = fireStation;
                 }
             }
         } catch (Exception ex) {
             logger.error("Error fetching the Fire Station which cover the address", ex);
         }
 
-        return null;
+        return fireStationSearch;
     }
 
 
     @Override
     public List<MedicalRecords> getMedicalRecordsByAddress(String address) {
 
-        if (listOfAllMedicalRecords.isEmpty())
-        {
-            getMedicalRecords();
-        }
+            listOfAllMedicalRecords = getMedicalRecords();
+
         //crete the list of medical records of the address
         List<MedicalRecords> listOfMedicalRecordsByAddress = new ArrayList<>();
 
@@ -303,10 +319,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
         List<FireStations> listOfFireStationsByStationNumber = new ArrayList<>();
 
-        if(listOfAllFireStations.isEmpty())
-        {
+
             listOfAllFireStations = getFireStations();
-        }
+
         try
         {
             for(FireStations fireStation : listOfAllFireStations)
@@ -329,10 +344,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public void saveNewPerson(Persons person)
     {
-        if(listOfAllPersons.isEmpty())
-        {
+
             listOfAllPersons = getPersons();
-        }
+
         try {
             listOfAllPersons.add(person);
 
@@ -346,10 +360,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public void deletePerson(String firstName, String lastName)
     {
-        if(listOfAllPersons.isEmpty())
-        {
             listOfAllPersons = getPersons();
-        }
 
         List<Integer> listOfIndexToRemove = new ArrayList<>();
 
@@ -380,10 +391,8 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public void upDatePersonInfo(Persons person)
     {
-        if(listOfAllPersons.isEmpty())
-        {
             listOfAllPersons = getPersons();
-        }
+
         try
         {
             for (Persons personTarget : listOfAllPersons)
@@ -411,10 +420,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
     @Override
     public void saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException {
-        if(listOfAllFireStations.isEmpty())
-        {
+
             listOfAllFireStations = getFireStations();
-        }
+
         try {
             listOfAllFireStations.add(fireStation);
 
@@ -427,10 +435,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
     @Override
     public void deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException {
-        if (listOfAllFireStations.isEmpty())
-        {
+
             listOfAllFireStations = getFireStations();
-        }
+
         List<Integer> listOfIndexToRemove = new ArrayList<>();
         try
         {
@@ -459,10 +466,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
     @Override
     public void deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException {
-        if (listOfAllFireStations.isEmpty())
-        {
+
             listOfAllFireStations = getFireStations();
-        }
+
 
         List<Integer> listOfIndexToRemove = new ArrayList<>();
 
@@ -491,10 +497,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
     @Override
     public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException {
-        if (listOfAllFireStations.isEmpty())
-        {
+
             listOfAllFireStations = getFireStations();
-        }
+
         try
         {
             for(FireStations fireStation : listOfAllFireStations)
@@ -515,10 +520,8 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public void saveNewMedicalRecords(MedicalRecords medicalRecord)
     {
-        if (listOfAllMedicalRecords.isEmpty())
-        {
             listOfAllMedicalRecords = getMedicalRecords();
-        }
+
         try
         {
             listOfAllMedicalRecords.add(medicalRecord);
@@ -532,10 +535,8 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public void upDateMedicalRecords(MedicalRecords medicalRecord)
     {
-        if (listOfAllMedicalRecords.isEmpty())
-        {
             listOfAllMedicalRecords = getMedicalRecords();
-        }
+
         try
         {
             for (MedicalRecords medicalRecordSelected : listOfAllMedicalRecords)
@@ -560,10 +561,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public void deleteMedicalRecords(String firstName, String lastName)
     {
-        if (listOfAllMedicalRecords.isEmpty())
-        {
+
             listOfAllMedicalRecords = getMedicalRecords();
-        }
+
         try
         {
             for (MedicalRecords medicalRecordSelected : listOfAllMedicalRecords)

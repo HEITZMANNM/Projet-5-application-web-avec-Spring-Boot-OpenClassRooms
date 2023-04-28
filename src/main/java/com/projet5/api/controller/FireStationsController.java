@@ -6,6 +6,7 @@ import com.projet5.api.model.*;
 import com.projet5.api.service.FireStationsService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,7 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
+
 
 @RestController
 public class FireStationsController {
@@ -21,8 +22,8 @@ public class FireStationsController {
     @Autowired
     private FireStationsService fireStationsService;
 
-@JsonView(View.PeopleCoveredByFireStationAndNumberOfChildren.class)
-    @GetMapping("/firestation")
+@JsonView(View.PersonsFirstNameLastNameAddressAndPhoneOnly.class)
+    @GetMapping(value = "/firestation", produces = "application/json")
     public PeopleCoveredByFireStationAndNumberOfChildren getPersonsCoveredByFireStationNumberAndNumberOfChildren(@RequestParam(name="stationNumber") int stationNumber) throws JSONException, IOException {
 
         return fireStationsService.getPersonsCoveredByFireStationNumberAndNumberOfChildren(stationNumber);
@@ -42,7 +43,7 @@ public class FireStationsController {
     }
 
     @JsonView(View.FamiliesPersonsCoveredByStationNumber.class)
-    @GetMapping("/flood")
+    @GetMapping("/flood/stations")
     public List<List<Persons>> getFamiliesCoveredByFireStationNumber(@RequestParam(name = "stationNumber") int stationNumber){
     return fireStationsService.getFamiliesCoveredByFireStationNumber(stationNumber);
     }
@@ -61,13 +62,17 @@ public class FireStationsController {
 
 
     @DeleteMapping("/firestationByStationNumber")
-    public void deleteFireStationByStationNumber(@RequestParam int stationNumber) throws JSONException, JsonProcessingException {
+    public ResponseEntity<HttpStatus> deleteFireStationByStationNumber(@RequestParam int stationNumber) throws JSONException, JsonProcessingException {
         fireStationsService.deleteFireStationByStationNumber(stationNumber);
+
+        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/firestationByAddress")
-    public void deleteFireStationByAddress(@RequestParam String address) throws JSONException, JsonProcessingException {
+    public ResponseEntity<HttpStatus> deleteFireStationByAddress(@RequestParam String address) throws JSONException, JsonProcessingException {
         fireStationsService.deleteFireStationByAddress(address);
+
+        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/firestation")

@@ -45,22 +45,19 @@ public class View {
     public interface PersonSearch extends FirstName, LastName, AddressPerson, Age, Email, MedicalRecordsOnly{
     }
 
-    public interface PersonSearchAndPersonsWithSameLastName extends PersonSearch, PersonFirstNameAndLastNameOnly{
+    public interface PersonInfo extends PersonSearch, PersonFirstNameAndLastNameOnly{
     }
     public interface MedicalRecordsOnly extends Medications, Allergies{
     }
     public interface ListOfPersonWithMedicalRecords extends FirstName, LastName, Phone, Age, MedicalRecordsOnly , StationNumber{
     }
-    public interface PeopleCoveredByFireStationNumber extends FirstName, LastName, AddressPerson, Phone {
+    public interface PersonsFirstNameLastNameAddressAndPhoneOnly extends FirstName, LastName, AddressPerson, Phone {
     }
-    public interface PeopleCoveredByFireStationAndNumberOfChildren extends PeopleCoveredByFireStationNumber{
-    }
+
     public interface ChildrenByAddressAndOtherMemberOfFamily extends FirstName, LastName, Age{
     }
     public interface MedicalRecordsFrontPersonFirstName extends FirstName, MedicalRecordsOnly{
     }
     public interface FamiliesPersonsCoveredByStationNumber extends MedicalRecordsFrontPersonFirstName, LastName, Age, Phone{
     }
-
-
 }

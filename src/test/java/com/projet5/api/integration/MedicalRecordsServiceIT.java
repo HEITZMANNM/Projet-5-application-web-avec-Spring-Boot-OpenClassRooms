@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+
 
 public class MedicalRecordsServiceIT {
 
@@ -50,7 +50,7 @@ public class MedicalRecordsServiceIT {
     @Test
     public void testToAddNewMedicalRecords()
     {
-        int sizeOfAllMedicalRecordsBeforeSaveTheNew = jsonReaderFromURLIMPL.getMedicalRecords().size();
+        int sizeOfAllMedicalRecordsBeforeSaveTheNew = jsonReaderFromURLIMPL.getListOfAllMedicalRecords().size();
 
         MedicalRecords medicalRecordsToAdd = new MedicalRecords();
         medicalRecordsToAdd.setFirstName("John");

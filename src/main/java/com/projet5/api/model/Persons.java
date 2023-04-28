@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 public class Persons {
 
-
     @JsonView(View.FirstName.class)
     private String firstName;
 
@@ -37,8 +36,6 @@ public class Persons {
     @JsonView(View.Age.class)
     private int age;
 
-
-
     public Persons(String firstName, String lastName, String address, String city, int zip, String phone, String email, FireStations fireStations, MedicalRecords medicalRecords, int age)
     {
         this.firstName = firstName;
@@ -55,11 +52,10 @@ public class Persons {
 
     public Persons()
     {
-
     }
 
-    // Method
-    // Creating toString
+//     Method
+//     Creating toString
     @Override public String toString()
     {
         // Returning attributes of person

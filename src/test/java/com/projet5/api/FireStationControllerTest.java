@@ -1,6 +1,7 @@
 package com.projet5.api;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projet5.api.controller.FireStationsController;
 import com.projet5.api.controller.PersonsController;
@@ -55,7 +56,7 @@ public class FireStationControllerTest {
 
     @Test
     public void testGetFamiliesCoveredByFireStationNumber() throws Exception {
-        mockMvc.perform(get("/flood?stationNumber=1"))
+        mockMvc.perform(get("/flood/stations?stationNumber=1"))
                 .andExpect(status().isOk());
     }
 
@@ -73,6 +74,48 @@ public class FireStationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testUpDateFireStation() throws Exception {
+
+        FireStations fireStation = new FireStations();
+        fireStation.setAddress("55 yellowstone street");
+        fireStation.setStation(5555);
+
+        fireStationsService.addANewFireStation(fireStation);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .put("/firestation?address=55 yellowstone street&stationNumber=77777")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testToDeleteFireStationByAddress() throws Exception {
+        FireStations fireStation = new FireStations();
+        fireStation.setAddress("55 yellowstone street");
+        fireStation.setStation(5555);
+
+        fireStationsService.addANewFireStation(fireStation);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .delete("/firestationByAddress?address={address}", "55 yellowstone street"))
+                .andExpect(status().isAccepted());
+    }
+
+    @Test
+    public void testToDeleteFireStationByStationNumber() throws Exception {
+        FireStations fireStation = new FireStations();
+        fireStation.setAddress("55 yellowstone street");
+        fireStation.setStation(7777);
+
+        fireStationsService.addANewFireStation(fireStation);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .delete("/firestationByStationNumber?stationNumber={stationNumber}", 7777))
+                .andExpect(status().isAccepted());
     }
 
     public static String asJsonString(final Object obj) {

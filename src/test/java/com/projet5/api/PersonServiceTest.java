@@ -1,42 +1,31 @@
 package com.projet5.api;
 
 import com.projet5.api.model.ListOfChildrenAndAdultsByAddress;
-import com.projet5.api.model.MedicalRecords;
 import com.projet5.api.model.Persons;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
 import com.projet5.api.service.PersonsService;
 import org.json.JSONException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-
-
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
-import org.junit.runner.Runner;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
 
-    private  PersonsService personsService;
+    @InjectMocks
+    private  PersonsService personsService = new PersonsService();
 
     private  List<Persons> listOfPersonsByAddress;
 
@@ -105,8 +94,6 @@ public class PersonServiceTest {
             when(jsonReaderFromURLIMPL.getPersonByLastName(anyString())).thenReturn(listOfAllPersons);
             when(jsonReaderFromURLIMPL.getPersons()).thenReturn(listOfAllPersons);
 
-            personsService= new PersonsService();
-            personsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
 
         } catch (Exception e) {
             e.printStackTrace();

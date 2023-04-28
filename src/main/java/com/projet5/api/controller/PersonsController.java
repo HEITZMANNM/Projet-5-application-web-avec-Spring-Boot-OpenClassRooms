@@ -1,7 +1,6 @@
 package com.projet5.api.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.projet5.api.model.ListOfChildrenAndAdultsByAddress;
 import com.projet5.api.model.Persons;
 import com.projet5.api.model.View;
@@ -33,7 +32,7 @@ public class PersonsController {
         return personsService.getChildrenAtAddressAndTheOtherMemberOfFamily(address);
     }
 
-    @JsonView(View.PersonSearchAndPersonsWithSameLastName.class)
+    @JsonView(View.PersonInfo.class)
     @GetMapping("/personInfo")
     public List<Persons> getPersonInfo(@RequestParam(name = "firstName") String firstname, @RequestParam(name = "lastName") String lastName) {
         return personsService.getPersonInfo(firstname, lastName);
@@ -48,7 +47,7 @@ public class PersonsController {
     @PostMapping("/person")
     public ResponseEntity<Void> postNewPerson(@RequestBody Persons person)
     {
-      personsService.addANewPerson(person);
+        personsService.addANewPerson(person);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -59,13 +58,21 @@ public class PersonsController {
     }
 
     @DeleteMapping("/person")
-    public void deletePerson(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
+    public ResponseEntity<HttpStatus> deletePerson(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
     {
         personsService.deleteThePerson(firstName, lastName);
+
+        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
     }
     @PutMapping("/person")
-    public void putPerson(@RequestBody Persons person)
+    public Persons putPerson(@RequestBody Persons person)
     {
-        personsService.upDatePerson(person);
+        personsService.updatePerson(person);
+
+        return person;
+    }
+
+    public void setPersonsService(PersonsService personsService) {
+        this.personsService = personsService;
     }
 }

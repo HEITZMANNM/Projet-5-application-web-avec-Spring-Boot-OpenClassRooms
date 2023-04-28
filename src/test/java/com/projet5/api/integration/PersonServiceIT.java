@@ -67,7 +67,7 @@ public void setUp()
 
         personToUpDate.setAddress("55 Fountain of Youth way");
 
-        personsService.upDatePerson(personToUpDate);
+        personsService.updatePerson(personToUpDate);
 
         List<Persons> personSearch = jsonReaderFromURLIMPL.getPersonByLastName("Sparrow");
 
