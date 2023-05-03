@@ -35,7 +35,7 @@ public class PersonServiceTest {
     private  JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
 
-    //creat a list with one child and two adult at the same address which will used to test the different methods of personService
+    //creat a list with one child and two adult at the same address which will be used to test the different methods of personService
     @BeforeEach
     private void setUp()
     {
@@ -43,9 +43,6 @@ public class PersonServiceTest {
         listOfAllPersons = new ArrayList<>();
 
         try {
-
-
-
             String addressSelected = "11 way of Yellowstone";
             String addressAunt = "15 street of Montana";
 
@@ -59,7 +56,6 @@ public class PersonServiceTest {
             child.setLastName("Dutton");
             child.setAge(13);
             child.setCity("MontanaCity");
-
 
             father.setAddress(addressSelected);
             father.setFirstName("John");
@@ -79,7 +75,6 @@ public class PersonServiceTest {
             aunt.setAge(40);
             aunt.setCity("Havre");
 
-
             listOfPersonsByAddress.add(child);
             listOfPersonsByAddress.add(father);
             listOfPersonsByAddress.add(mother);
@@ -89,11 +84,9 @@ public class PersonServiceTest {
             listOfAllPersons.add(father);
             listOfAllPersons.add(aunt);
 
-
             when(jsonReaderFromURLIMPL.getAllPersonsByAddress(anyString())).thenReturn(listOfPersonsByAddress);
             when(jsonReaderFromURLIMPL.getPersonByLastName(anyString())).thenReturn(listOfAllPersons);
             when(jsonReaderFromURLIMPL.getPersons()).thenReturn(listOfAllPersons);
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,12 +102,10 @@ public class PersonServiceTest {
     public void testTheImplementationOfListOfChildrenByAddress() throws JSONException, IOException {
         String address = "11 way of Yellowstone";
 
-
         ListOfChildrenAndAdultsByAddress listExpected = personsService.getChildrenAtAddressAndTheOtherMemberOfFamily(address);
 
         assertEquals(listExpected.getListOfChildren().size(), 1);
         assertEquals(listExpected.getListOfAdults().size(), 2);
-
     }
 
     //Control if the method getPersonInfo() return a list with the Person search in terms of lastName and FirstName
@@ -129,7 +120,6 @@ public class PersonServiceTest {
 
         assertEquals(listOfPersonSearch.get(0).getFirstName(), firstNameSearch);
         assertEquals(listOfPersonSearch.get(0).getLastName(), lastNameSearch);
-
     }
 
     //Control if the method getAllPersonsByCity return a list of person who live in the same city
@@ -138,13 +128,8 @@ public class PersonServiceTest {
     {
         String citySearch = "MontanaCity";
 
-
-
         List<Persons> listOfPersonsWhoLiveInTheSameCity = personsService.getAllPersonsByCity(citySearch);
 
         assertEquals(listOfPersonsWhoLiveInTheSameCity.size(), 3);
     }
-
-
-
 }

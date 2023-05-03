@@ -19,6 +19,7 @@ public class MedicalRecordsServiceIT {
 
     private static MedicalRecordsService medicalRecordsService;
 
+    //create a person and her medicalRecords to test the different method of MedicalRecordsService
     @BeforeAll
     public static void setUp()
     {
@@ -42,8 +43,6 @@ public class MedicalRecordsServiceIT {
         Persons personBeth = new Persons("Beth", "Dutton", "11 yellowstone way","Montana city",0, null, null, null, medicalRecords, 40);
 
         jsonReaderFromURLIMPL.saveNewPerson(personBeth);
-
-
     }
 
     //test to add a new medical records
@@ -73,11 +72,9 @@ public class MedicalRecordsServiceIT {
     @Test
     public void testToDeleteAMedicalRecords()
     {
-
         medicalRecordsService.deleteMedicalRecords("Beth", "Dutton");
 
         List<MedicalRecords> medicalRecordsSearch = jsonReaderFromURLIMPL.getMedicalRecordsByAddress("11 yellowstone way");
-
 
         assertEquals(medicalRecordsSearch.get(0).getFirstName(), "Beth");
         assertEquals(medicalRecordsSearch.get(0).getMedications().size(), 0);

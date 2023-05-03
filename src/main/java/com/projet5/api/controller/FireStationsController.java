@@ -23,7 +23,8 @@ public class FireStationsController {
     private FireStationsService fireStationsService;
 
 @JsonView(View.PersonsFirstNameLastNameAddressAndPhoneOnly.class)
-    @GetMapping(value = "/firestation", produces = "application/json")
+//    @GetMapping(value = "/firestation", produces = "application/json")
+@GetMapping("/firestation")
     public PeopleCoveredByFireStationAndNumberOfChildren getPersonsCoveredByFireStationNumberAndNumberOfChildren(@RequestParam(name="stationNumber") int stationNumber) throws JSONException, IOException {
 
         return fireStationsService.getPersonsCoveredByFireStationNumberAndNumberOfChildren(stationNumber);
@@ -78,6 +79,11 @@ public class FireStationsController {
     @PutMapping("/firestation")
     public void upDateStationNumber(@RequestParam(name = "address") String address, @RequestParam(name = "stationNumber") int stationNumberToChange) throws JSONException, JsonProcessingException {
         fireStationsService.upDateStationNumber(address, stationNumberToChange);
+    }
+
+    public void setFireStationsService(FireStationsService fireStationService)
+    {
+        this.fireStationsService = fireStationService;
     }
 
 

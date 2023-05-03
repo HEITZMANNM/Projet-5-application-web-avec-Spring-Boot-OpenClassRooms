@@ -38,7 +38,8 @@ public class PersonsService {
     {
         ListOfChildrenAndAdultsByAddress listOfChildrenAndAdultsByAddress = new ListOfChildrenAndAdultsByAddress();
 
-        try {
+        try
+        {
             //create the list of adults who live at the same address
             List<Persons> listOfPersonsByAddress = jsonReaderFromURLIMPL.getAllPersonsByAddress(address);
 

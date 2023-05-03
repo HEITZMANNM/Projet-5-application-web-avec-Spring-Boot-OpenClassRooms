@@ -28,10 +28,10 @@ public class MedicalRecordsServiceTest
 
     private  List<MedicalRecords> listOfAllMedicalRecords;
 
+    //create a list of medicalRecords, which will be used to control the different methods of MedicalRecordsService
     @BeforeEach
     public void setUp()
     {
-
         listOfAllMedicalRecords = new ArrayList<>();
         MedicalRecords medicalRecords = new MedicalRecords();
         medicalRecords.setLastName("Dutton");
@@ -42,8 +42,6 @@ public class MedicalRecordsServiceTest
         listOfAllMedicalRecords.add(medicalRecords);
 
         when(jsonReaderFromURLIMPL.getMedicalRecords()).thenReturn(listOfAllMedicalRecords);
-        
-
     }
 
     //test to get all medicalRecords

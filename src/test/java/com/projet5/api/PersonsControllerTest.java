@@ -29,6 +29,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+//test the PersonsController, with its different endpoints
 @ExtendWith(MockitoExtension.class)
 public class PersonsControllerTest {
 
@@ -87,7 +89,7 @@ public class PersonsControllerTest {
 
         this.mockMvc.perform(get("/personInfo?firstName=Beth&lastName=Dutton")).andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].firstName").value("Beth"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].email").value("BD@gmail.fr"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].email").value("BD@gmail.com"));
     }
 
     @Test

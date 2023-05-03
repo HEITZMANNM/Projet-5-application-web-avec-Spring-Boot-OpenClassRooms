@@ -5,19 +5,15 @@ import com.projet5.api.model.FireStationNumberAndPersonsByAddress;
 import com.projet5.api.model.FireStations;
 import com.projet5.api.model.PeopleCoveredByFireStationAndNumberOfChildren;
 import com.projet5.api.model.Persons;
+import com.projet5.api.repository.JSONReaderFromURLIMPL;
 import com.projet5.api.service.FireStationsService;
 import org.json.JSONException;
-//import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +41,9 @@ public class FireStationServiceTest
     private FireStationsService fireStationsService = new FireStationsService();
 
     //create fireStations and List of people used to test the different method of fireStationService
-    public void setUp() throws JSONException, JsonProcessingException {
-
+    @BeforeEach
+    public void setUp() throws JSONException, JsonProcessingException
+    {
         listOfFireStationByNumber3 = new ArrayList<>();
         listOfFireStationByNumber4 = new ArrayList<>();
         listOfPersonsByAddress = new ArrayList<>();
@@ -121,9 +118,8 @@ public class FireStationServiceTest
 
     //control if the method getAddressCoveredByFireStation() return a list of address covered by a fireStation
     @Test
-    public void testToFindTheAddressCoveredByASelectedFireStation() throws JSONException, JsonProcessingException {
-        setUp();
-
+    public void testToFindTheAddressCoveredByASelectedFireStation() throws JSONException, JsonProcessingException
+    {
         List<String> listOfAddressCovered =  fireStationsService.getAddressCoveredByFireStation(listOfFireStationByNumber3);
 
         assertEquals(listOfAddressCovered.size(), 2);
@@ -133,8 +129,6 @@ public class FireStationServiceTest
     @Test
     public void testToFindThePeopleCoveredByStationNumberAndTheNumberOfChildren() throws JSONException, JsonProcessingException
     {
-        setUp();
-
         PeopleCoveredByFireStationAndNumberOfChildren peopleCoveredByFireStationAndNumberOfChildren = fireStationsService.getPersonsCoveredByFireStationNumberAndNumberOfChildren(3);
 
         assertEquals(peopleCoveredByFireStationAndNumberOfChildren.getNumberOfChildren(), 1);
@@ -142,10 +136,8 @@ public class FireStationServiceTest
     }
 
     @Test
-    public void testToFindPeopleCoveredByStationNumber() throws JSONException, JsonProcessingException {
-
-        setUp();
-
+    public void testToFindPeopleCoveredByStationNumber() throws JSONException, JsonProcessingException
+    {
         List<Persons> listOfPersonsCoveredByStationNumber = fireStationsService.getPersonsCoveredByFireStationNumber(4);
 
         assertEquals(listOfPersonsCoveredByStationNumber.size(), 3);
@@ -154,8 +146,6 @@ public class FireStationServiceTest
     @Test
     public void testToFindAllPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem() throws JSONException, JsonProcessingException
     {
-        setUp();
-
         FireStationNumberAndPersonsByAddress fireStationNumberAndPersonsByAddress = fireStationsService.getPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem("22 high street");
 
         assertEquals(fireStationNumberAndPersonsByAddress.getFireStationNumber(), 4);
@@ -165,8 +155,6 @@ public class FireStationServiceTest
     @Test
     public void testToFindAllFamiliesCoveredByFireStationNumber() throws JSONException, JsonProcessingException
     {
-        setUp();
-
         List<List<Persons>> listOfFamiliesCovered = fireStationsService.getFamiliesCoveredByFireStationNumber(4);
 
         assertEquals(listOfFamiliesCovered.size(), 1);

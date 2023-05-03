@@ -7,12 +7,10 @@ import com.projet5.api.model.Persons;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -26,20 +24,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class JSONReaderFromURLIMPLTest {
 
-
     private static JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
+    //crete a list of persons with medicalRecords and a fireStation which cover them, for control the different method of the repository
     @BeforeEach
     public void setUp() throws JSONException, JsonProcessingException {
         jsonReaderFromURLIMPL = new JSONReaderFromURLIMPL();
 
         String addressSelected = "11 way of Yellowstone";
 
-
         Persons child = new Persons();
         Persons father = new Persons();
-//        Persons mother = new Persons();
-//        Persons aunt = new Persons();
 
         MedicalRecords medicalRecordsOfChild = new MedicalRecords();
         medicalRecordsOfChild.setBirthdate("20/12/2020");
@@ -62,54 +57,28 @@ public class JSONReaderFromURLIMPLTest {
         child.setMedicalRecords(medicalRecordsOfChild);
         child.setCity("MontanaCity");
 
-
         father.setAddress(addressSelected);
         father.setFirstName("John");
         father.setLastName("Dutton");
         father.setMedicalRecords(medicalRecordsOfFather);
         father.setCity("MontanaCity");
 
-
         jsonReaderFromURLIMPL.saveNewPerson(child);
         jsonReaderFromURLIMPL.saveNewPerson(father);
         jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecordsOfChild);
         jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecordsOfFather);
-
-
 
         FireStations fireStationSearch = new FireStations();
         fireStationSearch.setStation(777);
         fireStationSearch.setAddress("22 yellowstone street");
 
         jsonReaderFromURLIMPL.saveNewFireStation(fireStationSearch);
-
-//        mother.setAddress(addressSelected);
-//        mother.setFirstName("Marta");
-//        mother.setLastName("Dutton");
-//        mother.setAge(41);
-//        mother.setCity("MontanaCity");
-//
-//        aunt.setAddress(addressAunt);
-//        aunt.setFirstName("Lisa");
-//        aunt.setLastName("Dutton");
-//        aunt.setAge(40);
-//        aunt.setCity("Havre");
-
-
-//        listOfPersonsByAddress.add(child);
-//        listOfPersonsByAddress.add(father);
-//        listOfPersonsByAddress.add(mother);
-//
-//        listOfAllPersons.add(child);
-//        listOfAllPersons.add(mother);
-//        listOfAllPersons.add(father);
-//        listOfAllPersons.add(aunt);
-
     }
 
     //verify if the method readURL works and return a jsonObject
     @Test
-    public void testToReadUrl() throws JSONException, IOException {
+    public void testToReadUrl() throws JSONException, IOException
+    {
         String url = "https://s3-eu-west-1.amazonaws.com/course.oc-static.com/projects/DA+Java+EN/P5+/data.json";
         JSONObject jsonObject = jsonReaderFromURLIMPL.readJsonFromUrl(url);
 
@@ -132,7 +101,6 @@ public class JSONReaderFromURLIMPLTest {
     @Test
     public void testGetPersonByLastName()
     {
-
         List<Persons> recoveredPerson =  jsonReaderFromURLIMPL.getPersonByLastName("Dutton");
 
         assertEquals(recoveredPerson.get(0).getFirstName(), "Beth");
@@ -141,8 +109,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to verify if the method calculate the age of person works correctly
     @Test
-    public void testToCalculateAgeOfPersons() throws ParseException {
-
+    public void testToCalculateAgeOfPersons() throws ParseException
+    {
         List<Persons> listOfPersonsToTest = new ArrayList<>();
 
         Persons child = new Persons();
@@ -188,10 +156,9 @@ public class JSONReaderFromURLIMPLTest {
 
     //try to get all persons by address
     @Test
-    public void testToGetAllPersonsByAddress() throws JSONException, JsonProcessingException {
-
+    public void testToGetAllPersonsByAddress() throws JSONException, JsonProcessingException
+    {
         String address = "11 way of Yellowstone";
-
 
         List<Persons> listOfAllPersonWhoLiveAtTheFakeAddress = jsonReaderFromURLIMPL.getAllPersonsByAddress(address);
 
@@ -201,9 +168,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to recover all fire stations
     @Test
-    public void testToGetFireStation() throws JSONException, JsonProcessingException {
-
-
+    public void testToGetFireStation() throws JSONException, JsonProcessingException
+    {
         List<FireStations> listOfAllFireStations = jsonReaderFromURLIMPL.getFireStations();
 
         assertNotNull(listOfAllFireStations);
@@ -211,8 +177,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to get a fire station by its address
     @Test
-    public void testGetFireStationByAddress() throws JSONException, JsonProcessingException {
-
+    public void testGetFireStationByAddress() throws JSONException, JsonProcessingException
+    {
         String address = "22 yellowstone street";
 
         FireStations fireStation = jsonReaderFromURLIMPL.getFireStationByAddress(address);
@@ -245,7 +211,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to recover the firestation by address
     @Test
-    public void testToGetFireStationByStationNumber() throws JSONException, JsonProcessingException {
+    public void testToGetFireStationByStationNumber() throws JSONException, JsonProcessingException
+    {
         List<FireStations> ListOfFireStationSearch = jsonReaderFromURLIMPL.getFireStationByStationNumber(777);
 
         assertEquals(ListOfFireStationSearch.size(), 1);
@@ -271,7 +238,6 @@ public class JSONReaderFromURLIMPLTest {
     @Test
     public void testToDeleteAPerson()
     {
-
         jsonReaderFromURLIMPL.deletePerson("Beth", "Dutton");
 
         List<Persons> listOfPersonSearch = jsonReaderFromURLIMPL.getPersonByLastName("Dutton");
@@ -283,8 +249,6 @@ public class JSONReaderFromURLIMPLTest {
     @Test
     public void testToUpDatePersonInfo()
     {
-
-
         List<Persons> listOfPersonToUpDate = jsonReaderFromURLIMPL.getPersonByLastName("Dutton");
         Persons personToUpDate = listOfPersonToUpDate.get(0);
         personToUpDate.setCity("Smithfield");
@@ -298,7 +262,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to save a new fireStation
     @Test
-    public void testToSaveNewFireStation() throws JSONException, JsonProcessingException {
+    public void testToSaveNewFireStation() throws JSONException, JsonProcessingException
+    {
         FireStations fireStationToSave = new FireStations();
         fireStationToSave.setAddress("10 comté street");
         fireStationToSave.setStation(999);
@@ -311,9 +276,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to delete a fireStation by its address
     @Test
-    public void testToDeleteFireStationByAddress() throws JSONException, JsonProcessingException {
-
-
+    public void testToDeleteFireStationByAddress() throws JSONException, JsonProcessingException
+    {
         jsonReaderFromURLIMPL.deleteFireStationByAddress("22 yellowstone street");
 
         FireStations fireStationByAddress = jsonReaderFromURLIMPL.getFireStationByAddress("22 yellowstone street");
@@ -324,9 +288,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to delete a fireStation by its station number
     @Test
-    public void testToDeleteAFireStationByItsNumber() throws JSONException, JsonProcessingException {
-
-
+    public void testToDeleteAFireStationByItsNumber() throws JSONException, JsonProcessingException
+    {
         jsonReaderFromURLIMPL.deleteFireStationByStationNumber(777);
 
         List<FireStations> listOfFireStationByNumber = jsonReaderFromURLIMPL.getFireStationByStationNumber(777);
@@ -336,9 +299,8 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to update the station number of a fireStation
     @Test
-    public void testToUpDateStationNumberOfFireStation() throws JSONException, JsonProcessingException {
-
-
+    public void testToUpDateStationNumberOfFireStation() throws JSONException, JsonProcessingException
+    {
         jsonReaderFromURLIMPL.upDateStationNumber("22 yellowstone street", 778);
 
         FireStations fireStation = jsonReaderFromURLIMPL.getFireStationByAddress("22 yellowstone street");
@@ -368,8 +330,7 @@ public class JSONReaderFromURLIMPLTest {
 
     //test to upDate medical records
     @Test
-    public void testToUpDateMedicalRecords()
-    {
+    public void testToUpDateMedicalRecords() {
         MedicalRecords medicalRecordsToUpDate = new MedicalRecords();
         medicalRecordsToUpDate.setFirstName("Beth");
         medicalRecordsToUpDate.setLastName("Dutton");
@@ -386,20 +347,16 @@ public class JSONReaderFromURLIMPLTest {
 
         assertEquals(allergiesNumber, 2);
         assertEquals(allergiesTarget, "peanuts");
-
     }
 
     //test to delete medical records
     @Test
     public void testToDeleteMedicalRecords()
     {
-
         jsonReaderFromURLIMPL.deleteMedicalRecords("John", "Dutton");
 
         int numberOfAllergiesForMrDuttonAfterDeletion = jsonReaderFromURLIMPL.getMedicalRecordsByAddress("11 way of Yellowstone").get(1).getAllergies().size();
 
-
         assertEquals(numberOfAllergiesForMrDuttonAfterDeletion, 0);
     }
-
 }

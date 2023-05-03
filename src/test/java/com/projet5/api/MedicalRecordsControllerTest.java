@@ -25,6 +25,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+//test the MedicalRecordsController, with its different endpoints
 @ExtendWith(MockitoExtension.class)
 public class MedicalRecordsControllerTest
 {
@@ -66,6 +68,7 @@ public class MedicalRecordsControllerTest
         assertNotNull(mockMvc);
     }
 
+    //test to get all medicalRecords when we used the endpoint
     @Test
     public void testGetAllMedicalRecords() throws Exception {
 
@@ -75,7 +78,7 @@ public class MedicalRecordsControllerTest
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].lastName").value("Dutton"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].allergies.[0]").value("peanut"));
     }
-
+//test to post a new medicalRecords using the endpoint
     @Test
     public void testToPostNewMedicalRecords() throws Exception {
 
@@ -91,6 +94,7 @@ public class MedicalRecordsControllerTest
                 .andExpect(status().isCreated());
     }
 
+    //test to upDate a medicalRecords using the endpoint
     @Test
     public void testUpDateMedialRecords() throws Exception {
 
@@ -119,6 +123,7 @@ public class MedicalRecordsControllerTest
                 .andExpect(MockMvcResultMatchers.jsonPath("$.allergies.[1]").value("Lemon"));
     }
 
+    //test to delete a medicalRecords using the endpoint
     @Test
     public void testToDeleteMedicalRecords() throws Exception {
         MedicalRecords medicalRecordsToAdd = new MedicalRecords();
