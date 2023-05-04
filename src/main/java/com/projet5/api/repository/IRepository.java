@@ -29,25 +29,25 @@ public interface IRepository {
     public List<FireStations> getFireStations() throws JSONException, JsonProcessingException;
     public List<FireStations> getFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException;
     public void calculateAgeOfPersons(List<Persons> listOfPersons);
-    public void saveNewPerson(Persons person);
+    public boolean saveNewPerson(Persons person);
 
-    public void deletePerson(String firstName, String lastName);
+    public boolean deletePerson(String firstName, String lastName);
 
-    public void upDatePersonInfo (Persons person);
+    public boolean upDatePersonInfo (Persons person);
 
-    public void saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException;
+    public boolean saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException;
 
-    public void deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException;
+    public boolean deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException;
 
-    public void deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException;
+    public boolean deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException;
 
-    public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException;
+    public boolean upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException;
 
-    public void saveNewMedicalRecords(MedicalRecords medicalRecord);
+    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord);
 
-    public void upDateMedicalRecords(MedicalRecords medicalRecord);
+    public boolean upDateMedicalRecords(MedicalRecords medicalRecord);
 
-    public void deleteMedicalRecords(String firstName, String lasteName);
+    public boolean deleteMedicalRecords(String firstName, String lasteName);
 }
 
 

@@ -7,17 +7,11 @@ import com.projet5.api.model.View;
 import com.projet5.api.service.PersonsService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -45,31 +39,34 @@ public class PersonsController {
     }
 
     @PostMapping("/person")
-    public ResponseEntity<Void> postNewPerson(@RequestBody Persons person)
+    public ResponseEntity<HttpStatus> postNewPerson(@RequestBody Persons person)
     {
-        personsService.addANewPerson(person);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/personInfo?firstName={}&lastName={}")
-                .buildAndExpand(person.getFirstName(), person.getLastName())
-                .toUri();
-        return ResponseEntity.created(location).build();
+       if(personsService.addANewPerson(person))
+       {
+           return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
+       }
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/person")
     public ResponseEntity<HttpStatus> deletePerson(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
     {
-        personsService.deleteThePerson(firstName, lastName);
+      if(personsService.deleteThePerson(firstName, lastName))
+      {
+          return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+      }
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
     }
     @PutMapping("/person")
-    public Persons putPerson(@RequestBody Persons person)
+    public ResponseEntity<HttpStatus>  putPerson(@RequestBody Persons person)
     {
-        personsService.updatePerson(person);
+       if(personsService.updatePerson(person))
+       {
+           return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+       }
 
-        return person;
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     public void setPersonsService(PersonsService personsService) {

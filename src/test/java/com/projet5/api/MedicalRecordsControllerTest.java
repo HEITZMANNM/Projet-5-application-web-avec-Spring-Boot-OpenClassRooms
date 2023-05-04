@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,8 +35,25 @@ public class MedicalRecordsControllerTest
     @InjectMocks
     private MedicalRecordsController medicalRecordsController;
 
-    @Mock(lenient = true)
-    private JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
+    private JSONReaderFromURLIMPL jsonReaderFromURLIMPL = new JSONReaderFromURLIMPL()
+    {
+        @Override
+        public List<MedicalRecords> getMedicalRecords()
+        {
+            List<MedicalRecords> listOfAllMedicalRecords = new ArrayList<>();
+            MedicalRecords medicalRecords = new MedicalRecords();
+            medicalRecords.setLastName("Dutton");
+            medicalRecords.setFirstName("Beth");
+            List<String> allergies = new ArrayList<>();
+            allergies.add("peanut");
+            List<String> medications = new ArrayList<>();
+            medicalRecords.setAllergies(allergies);
+            medicalRecords.setMedications(medications);
+            listOfAllMedicalRecords.add(medicalRecords);
+
+            return listOfAllMedicalRecords;
+        }
+    };
 
     @BeforeEach
     public void setUp()
@@ -48,18 +63,6 @@ public class MedicalRecordsControllerTest
         medicalRecordsService = new MedicalRecordsService();
         medicalRecordsController.setMedicalRecordsService(medicalRecordsService);
         medicalRecordsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
-
-        List<MedicalRecords> listOfAllMedicalRecords = new ArrayList<>();
-        MedicalRecords medicalRecords = new MedicalRecords();
-        medicalRecords.setLastName("Dutton");
-        medicalRecords.setFirstName("Beth");
-        List<String> allergies = new ArrayList<>();
-        allergies.add("peanut");
-        medicalRecords.setAllergies(allergies);
-        listOfAllMedicalRecords.add(medicalRecords);
-
-        when(jsonReaderFromURLIMPL.getMedicalRecords()).thenReturn(listOfAllMedicalRecords);
-
     }
 
     @Test
@@ -78,7 +81,7 @@ public class MedicalRecordsControllerTest
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].lastName").value("Dutton"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].allergies.[0]").value("peanut"));
     }
-//test to post a new medicalRecords using the endpoint
+    //test to post a new medicalRecords using the endpoint
     @Test
     public void testToPostNewMedicalRecords() throws Exception {
 
@@ -98,46 +101,56 @@ public class MedicalRecordsControllerTest
     @Test
     public void testUpDateMedialRecords() throws Exception {
 
-        MedicalRecords medicalRecordsToAdd = new MedicalRecords();
-        medicalRecordsToAdd.setLastName("Dutton");
-        medicalRecordsToAdd.setFirstName("Beth");
-        List<String> allergies = new ArrayList<>();
-        allergies.add("peanut");
-        medicalRecordsToAdd.setAllergies(allergies);
 
-        medicalRecordsService.saveNewMedicalRecords(medicalRecordsToAdd);
 
         MedicalRecords medicalRecordsToUpDate = new MedicalRecords();
         medicalRecordsToUpDate.setLastName("Dutton");
         medicalRecordsToUpDate.setFirstName("Beth");
         List<String> allergiesUpDated = new ArrayList<>();
-        allergies.add("Lemon");
-        medicalRecordsToUpDate.setAllergies(allergies);
+        allergiesUpDated.add("Lemon");
+        medicalRecordsToUpDate.setAllergies(allergiesUpDated);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .put("/medicalRecord")
                         .content(asJsonString(medicalRecordsToUpDate))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.allergies.[1]").value("Lemon"));
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpDateUnknownMedialRecords() throws Exception {
+
+        MedicalRecords medicalRecordsToUpDate = new MedicalRecords();
+        medicalRecordsToUpDate.setLastName("Banner");
+        medicalRecordsToUpDate.setFirstName("Bill");
+        List<String> allergiesUpDated = new ArrayList<>();
+        allergiesUpDated.add("Lemon");
+        medicalRecordsToUpDate.setAllergies(allergiesUpDated);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .put("/medicalRecord")
+                        .content(asJsonString(medicalRecordsToUpDate))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     //test to delete a medicalRecords using the endpoint
     @Test
     public void testToDeleteMedicalRecords() throws Exception {
-        MedicalRecords medicalRecordsToAdd = new MedicalRecords();
-        medicalRecordsToAdd.setLastName("Dutton");
-        medicalRecordsToAdd.setFirstName("Beth");
-        List<String> allergies = new ArrayList<>();
-        allergies.add("peanut");
-        medicalRecordsToAdd.setAllergies(allergies);
-
-        medicalRecordsService.saveNewMedicalRecords(medicalRecordsToAdd);
 
         mockMvc.perform( MockMvcRequestBuilders
-                        .delete("/medicalRecord?firstName={}&lastName={}", "Beth", "Dutton"))
+                        .delete("/medicalRecord?firstName=Beth&lastName=Dutton"))
                 .andExpect(status().isAccepted());
+    }
+
+    @Test
+    public void testToDeleteUnknownMedicalRecords() throws Exception {
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .delete("/medicalRecord?firstName=Bill&lastName=Banner"))
+                .andExpect(status().isBadRequest());
     }
 
     public static String asJsonString(final Object obj) {

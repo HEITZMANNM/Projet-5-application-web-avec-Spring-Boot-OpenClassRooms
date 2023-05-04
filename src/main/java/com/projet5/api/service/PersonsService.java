@@ -23,6 +23,7 @@ public class PersonsService {
     @Autowired
     JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
+    //setter used in controller test and IT test
     public void setJsonReaderFromURLIMPL(IRepository repository)
     {
         this.jsonReaderFromURLIMPL= (JSONReaderFromURLIMPL) repository;
@@ -126,24 +127,20 @@ public class PersonsService {
         return listOfPersonsWhoLiveInTheSelectedCity;
     }
 
-    public void addANewPerson(Persons person)
+    public boolean addANewPerson(Persons person)
     {
-        jsonReaderFromURLIMPL.saveNewPerson(person);
+       return jsonReaderFromURLIMPL.saveNewPerson(person);
     }
 
-    public void deleteThePerson(String firstName, String lastName)
+    public boolean deleteThePerson(String firstName, String lastName)
     {
-        jsonReaderFromURLIMPL.deletePerson(firstName, lastName);
+        return jsonReaderFromURLIMPL.deletePerson(firstName, lastName);
     }
 
-    public void updatePerson(Persons person)
+    public boolean updatePerson(Persons person)
     {
-        jsonReaderFromURLIMPL.upDatePersonInfo(person);
+        return jsonReaderFromURLIMPL.upDatePersonInfo(person);
     }
-
-
-
-
 
 }
 

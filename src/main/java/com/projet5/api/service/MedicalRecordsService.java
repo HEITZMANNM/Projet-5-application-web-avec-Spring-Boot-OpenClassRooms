@@ -17,6 +17,7 @@ public class MedicalRecordsService {
     @Autowired
     JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
+    //setter used in controller test and IT test
     public void setJsonReaderFromURLIMPL(IRepository repository)
     {
         this.jsonReaderFromURLIMPL= (JSONReaderFromURLIMPL) repository;
@@ -33,18 +34,18 @@ public class MedicalRecordsService {
     {
        return jsonReaderFromURLIMPL.getMedicalRecords();
     }
-    public void saveNewMedicalRecords(MedicalRecords medicalRecord)
+    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord)
     {
-        jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecord);
+        return jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecord);
     }
 
-    public void upDateMedicalRecords(MedicalRecords medicalRecord)
+    public boolean upDateMedicalRecords(MedicalRecords medicalRecord)
     {
-        jsonReaderFromURLIMPL.upDateMedicalRecords(medicalRecord);
+        return jsonReaderFromURLIMPL.upDateMedicalRecords(medicalRecord);
     }
 
-    public void deleteMedicalRecords(String firstName, String lastName)
+    public boolean deleteMedicalRecords(String firstName, String lastName)
     {
-        jsonReaderFromURLIMPL.deleteMedicalRecords(firstName, lastName);
+        return jsonReaderFromURLIMPL.deleteMedicalRecords(firstName, lastName);
     }
 }

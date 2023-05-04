@@ -23,6 +23,7 @@ public class FireStationsService {
     @Autowired
     JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
+    //setter used in controller test and IT test
     public void setJsonReaderFromURLIMPL(IRepository repository)
     {
         this.jsonReaderFromURLIMPL= (JSONReaderFromURLIMPL) repository;
@@ -175,23 +176,29 @@ public class FireStationsService {
         return listOfPersonsOfFamiliesCovered;
     }
 
-    public void addANewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException
+    public boolean addANewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException
     {
-        jsonReaderFromURLIMPL.saveNewFireStation(fireStation);
+        return jsonReaderFromURLIMPL.saveNewFireStation(fireStation);
     }
 
-    public void deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException
+    public boolean deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException
     {
-        jsonReaderFromURLIMPL.deleteFireStationByStationNumber(stationNumber);
+       return jsonReaderFromURLIMPL.deleteFireStationByStationNumber(stationNumber);
     }
 
-    public void deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException
+    public boolean deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException
     {
-        jsonReaderFromURLIMPL.deleteFireStationByAddress(address);
+      return  jsonReaderFromURLIMPL.deleteFireStationByAddress(address);
     }
 
-    public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException
+    public boolean upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException
     {
-        jsonReaderFromURLIMPL.upDateStationNumber(address, stationNumber);
+       return jsonReaderFromURLIMPL.upDateStationNumber(address, stationNumber);
+    }
+
+    //used on Postman for control
+    public List<FireStations> getAllFireStation() throws JSONException, JsonProcessingException
+    {
+       return jsonReaderFromURLIMPL.getFireStations();
     }
 }

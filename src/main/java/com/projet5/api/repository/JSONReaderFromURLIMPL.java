@@ -28,7 +28,6 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
     private List<MedicalRecords> listOfAllMedicalRecords = new ArrayList<>();
 
-    public List<FireStations> getListOAllFireStations(){ return listOfAllFireStations; }
     public List<MedicalRecords> getListOfAllMedicalRecords(){return listOfAllMedicalRecords;}
 
     public List<MedicalRecords> setListOfAllMedicalRecords(List<MedicalRecords> listOfAllMedicalRecords)
@@ -118,7 +117,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public List<Persons> getPersonByLastName(String lastName){
 
-            listOfAllPersons = getPersons();
+        listOfAllPersons = getPersons();
 
 
         List<Persons> listOfPersonsWithTheSameLastName = new ArrayList<>();
@@ -161,7 +160,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public List<Persons> getAllPersonsByAddress(String address) throws JSONException, JsonProcessingException {
 
-            listOfAllPersons = getPersons();
+        listOfAllPersons = getPersons();
 
 
         List<Persons> listOfPersonByAddress = new ArrayList<>();
@@ -263,8 +262,8 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
         FireStations fireStationSearch = new FireStations();
 
-            //create the list of all fire stations
-            listOfAllFireStations = getFireStations();
+        //create the list of all fire stations
+        listOfAllFireStations = getFireStations();
 
         try {
             for (FireStations fireStation : listOfAllFireStations) {
@@ -283,7 +282,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
     @Override
     public List<MedicalRecords> getMedicalRecordsByAddress(String address) {
 
-            listOfAllMedicalRecords = getMedicalRecords();
+        listOfAllMedicalRecords = getMedicalRecords();
 
         //crete the list of medical records of the address
         List<MedicalRecords> listOfMedicalRecordsByAddress = new ArrayList<>();
@@ -320,7 +319,7 @@ public class JSONReaderFromURLIMPL implements IRepository{
         List<FireStations> listOfFireStationsByStationNumber = new ArrayList<>();
 
 
-            listOfAllFireStations = getFireStations();
+        listOfAllFireStations = getFireStations();
 
         try
         {
@@ -342,10 +341,9 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
 
     @Override
-    public void saveNewPerson(Persons person)
+    public boolean saveNewPerson(Persons person)
     {
-
-            listOfAllPersons = getPersons();
+        listOfAllPersons = getPersons();
 
         try {
             listOfAllPersons.add(person);
@@ -354,15 +352,17 @@ public class JSONReaderFromURLIMPL implements IRepository{
         }
         catch(Exception ex){
             logger.error("Error save the new person ",ex);
+            return false;
         }
+        return true;
     }
 
     @Override
-    public void deletePerson(String firstName, String lastName)
+    public boolean deletePerson(String firstName, String lastName)
     {
-            listOfAllPersons = getPersons();
+        listOfAllPersons = getPersons();
 
-        List<Integer> listOfIndexToRemove = new ArrayList<>();
+        List<Persons> listToRemove = new ArrayList<>();
 
         try
         {
@@ -372,27 +372,27 @@ public class JSONReaderFromURLIMPL implements IRepository{
                 String lastNamePerson = person.getLastName();
                 if(firstNamePerson.equals(firstName) && lastNamePerson.equals(lastName))
                 {
-                    int indexOfPerson = listOfAllPersons.indexOf(person);
-
-                    listOfIndexToRemove.add(indexOfPerson);
+                    listToRemove.add(person);
                 }
             }
-            for (int indexOfPerson : listOfIndexToRemove)
-            {
-                listOfAllPersons.remove(indexOfPerson);
-                logger.debug("The person was delete");
-            }
+            listOfAllPersons.removeAll(listToRemove);
+            logger.debug("The person was delete");
         }
         catch(Exception ex){
             logger.error("Error delete the person ",ex);
+            return false;
         }
+        if (listToRemove.size()>0) {
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void upDatePersonInfo(Persons person)
+    public boolean upDatePersonInfo(Persons person)
     {
-            listOfAllPersons = getPersons();
-
+        listOfAllPersons = getPersons();
+        boolean response = false;
         try
         {
             for (Persons personTarget : listOfAllPersons)
@@ -409,19 +409,23 @@ public class JSONReaderFromURLIMPL implements IRepository{
                     personTarget.setAddress(person.getAddress());
                     personTarget.setPhone(person.getPhone());
                     personTarget.setZip(person.getZip());
+
+                    response = true;
                 }
             }
             logger.debug("The person's info were update");
         }
         catch(Exception ex){
             logger.error("Error update the person's info ",ex);
+            return response;
         }
+        return response;
     }
 
     @Override
-    public void saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException {
+    public boolean saveNewFireStation(FireStations fireStation) throws JSONException, JsonProcessingException {
 
-            listOfAllFireStations = getFireStations();
+        listOfAllFireStations = getFireStations();
 
         try {
             listOfAllFireStations.add(fireStation);
@@ -430,15 +434,18 @@ public class JSONReaderFromURLIMPL implements IRepository{
         }
         catch(Exception ex){
             logger.error("Error save the new fire station ",ex);
+
+            return false;
         }
+        return true;
     }
 
     @Override
-    public void deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException {
+    public boolean deleteFireStationByStationNumber(int stationNumber) throws JSONException, JsonProcessingException {
 
-            listOfAllFireStations = getFireStations();
+        listOfAllFireStations = getFireStations();
 
-        List<Integer> listOfIndexToRemove = new ArrayList<>();
+        List<FireStations> listToRemove = new ArrayList<>();
         try
         {
             for(FireStations fireStation : listOfAllFireStations)
@@ -447,59 +454,59 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
                 if(stationNumberOfSelectedFireStation==stationNumber)
                 {
-                    int indexOfStation = listOfAllFireStations.indexOf(fireStation);
-                    listOfIndexToRemove.add(indexOfStation);
+                    listToRemove.add(fireStation);
                 }
             }
-            for(int index : listOfIndexToRemove)
-            {
-                listOfAllFireStations.remove(index);
-                logger.debug("The fire station was delete");
-            }
+            listOfAllFireStations.removeAll(listToRemove);
+            logger.debug("The fire station was delete");
         }
         catch(Exception ex){
             logger.error("Error delete the fire station by its station number",ex);
+            return false;
         }
+        if (listToRemove.size()>0) {
+            return true;
+        }
+        return false;
     }
 
 
 
     @Override
-    public void deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException {
+    public boolean deleteFireStationByAddress(String address) throws JSONException, JsonProcessingException {
 
-            listOfAllFireStations = getFireStations();
+        listOfAllFireStations = getFireStations();
 
 
-        List<Integer> listOfIndexToRemove = new ArrayList<>();
+        List<FireStations> listToRemove = new ArrayList<>();
 
         try
         {
             for(FireStations fireStation : listOfAllFireStations)
             {
-                String addressOfFireStationSelected=fireStation.getAddress();
-
-                if(address.equals(addressOfFireStationSelected))
+                if(address.equals(fireStation.getAddress()))
                 {
-                    int indexOfStation = listOfAllFireStations.indexOf(fireStation);
-                    listOfIndexToRemove.add(indexOfStation);
+                    listToRemove.add(fireStation);
                 }
             }
-            for(int index : listOfIndexToRemove)
-            {
-                listOfAllFireStations.remove(index);
-                logger.debug("The fire station was delete");
-            }
+            listOfAllFireStations.removeAll(listToRemove);
+            logger.debug("The fire station was delete");
         }
         catch(Exception ex){
             logger.error("Error delete the fire station ",ex);
+            return false;
         }
+        if(listToRemove.size()>0) {
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException {
+    public boolean upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException {
 
-            listOfAllFireStations = getFireStations();
-
+        listOfAllFireStations = getFireStations();
+        boolean response = false;
         try
         {
             for(FireStations fireStation : listOfAllFireStations)
@@ -509,34 +516,40 @@ public class JSONReaderFromURLIMPL implements IRepository{
                     fireStation.setStation(stationNumber);
 
                     logger.debug("The station Number at the address :"+address+" was upDated");
+                    response = true;
                 }
             }
         }
         catch(Exception ex){
             logger.error("Error update the fire station Number",ex);
+            return response;
         }
+        return response;
     }
 
     @Override
-    public void saveNewMedicalRecords(MedicalRecords medicalRecord)
+    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord)
     {
-            listOfAllMedicalRecords = getMedicalRecords();
-
+        listOfAllMedicalRecords = getMedicalRecords();
+        boolean response = false;
         try
         {
             listOfAllMedicalRecords.add(medicalRecord);
             logger.debug("the new medical records were saved");
+            response = true;
         }
         catch(Exception ex){
             logger.error("Error save the new medical records",ex);
+            return response;
         }
+        return response;
     }
 
     @Override
-    public void upDateMedicalRecords(MedicalRecords medicalRecord)
+    public boolean upDateMedicalRecords(MedicalRecords medicalRecord)
     {
-            listOfAllMedicalRecords = getMedicalRecords();
-
+        listOfAllMedicalRecords = getMedicalRecords();
+        boolean response = false;
         try
         {
             for (MedicalRecords medicalRecordSelected : listOfAllMedicalRecords)
@@ -550,20 +563,22 @@ public class JSONReaderFromURLIMPL implements IRepository{
                     medicalRecordSelected.setAllergies(medicalRecord.getAllergies());
 
                     logger.debug("the medical records were update");
+                    response = true;
                 }
             }
         }
         catch(Exception ex){
             logger.error("Error update the medical records",ex);
+            return response;
         }
+        return response;
     }
 
     @Override
-    public void deleteMedicalRecords(String firstName, String lastName)
+    public boolean deleteMedicalRecords(String firstName, String lastName)
     {
-
-            listOfAllMedicalRecords = getMedicalRecords();
-
+        listOfAllMedicalRecords = getMedicalRecords();
+        boolean response = false;
         try
         {
             for (MedicalRecords medicalRecordSelected : listOfAllMedicalRecords)
@@ -580,12 +595,15 @@ public class JSONReaderFromURLIMPL implements IRepository{
                     medicalRecordSelected.getAllergies().removeAll(allergiesToDelete);
 
                     logger.debug("the medical records were delete");
+                    response = true;
                 }
             }
         }
         catch(Exception ex){
             logger.error("Error delete the medical records",ex);
+            return response;
         }
+        return response;
     }
 
 }

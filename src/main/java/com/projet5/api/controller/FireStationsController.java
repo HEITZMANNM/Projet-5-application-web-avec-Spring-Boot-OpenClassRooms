@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 
@@ -50,35 +48,44 @@ public class FireStationsController {
     }
 
     @PostMapping("/firestation")
-    public ResponseEntity<Void> saveNewFireStation (@RequestBody FireStations fireStation) throws JSONException, JsonProcessingException {
-        fireStationsService.addANewFireStation(fireStation);
+    public ResponseEntity<HttpStatus> saveNewFireStation (@RequestBody FireStations fireStation) throws JSONException, JsonProcessingException {
+      if(fireStationsService.addANewFireStation(fireStation))
+      {
+          return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
+      }
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/fire?address={}")
-                .buildAndExpand(fireStation.getAddress())
-                .toUri();
-        return ResponseEntity.created(location).build();
+      return  new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
 
     @DeleteMapping("/firestationByStationNumber")
     public ResponseEntity<HttpStatus> deleteFireStationByStationNumber(@RequestParam int stationNumber) throws JSONException, JsonProcessingException {
-        fireStationsService.deleteFireStationByStationNumber(stationNumber);
+       if(fireStationsService.deleteFireStationByStationNumber(stationNumber))
+       {
+           return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+       }
 
-        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/firestationByAddress")
     public ResponseEntity<HttpStatus> deleteFireStationByAddress(@RequestParam String address) throws JSONException, JsonProcessingException {
-        fireStationsService.deleteFireStationByAddress(address);
+       if(fireStationsService.deleteFireStationByAddress(address))
+       {
+           return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+       }
 
-        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/firestation")
-    public void upDateStationNumber(@RequestParam(name = "address") String address, @RequestParam(name = "stationNumber") int stationNumberToChange) throws JSONException, JsonProcessingException {
-        fireStationsService.upDateStationNumber(address, stationNumberToChange);
+    public ResponseEntity<HttpStatus> upDateStationNumber(@RequestParam(name = "address") String address, @RequestParam(name = "stationNumber") int stationNumberToChange) throws JSONException, JsonProcessingException {
+        if(fireStationsService.upDateStationNumber(address, stationNumberToChange))
+        {
+            return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     public void setFireStationsService(FireStationsService fireStationService)
@@ -91,10 +98,10 @@ public class FireStationsController {
 
 
 
-    //pour tester
-//    @GetMapping("/firestationAll")
-//    public List<FireStations> getAllFireStations() throws JSONException, JsonProcessingException {
-//        return fireStationsService.getAllFireStation();
-//    }
+    //Used for control on PostMan
+    @GetMapping("/firestationAll")
+    public List<FireStations> getAllFireStations() throws JSONException, JsonProcessingException {
+        return fireStationsService.getAllFireStation();
+    }
 
 }

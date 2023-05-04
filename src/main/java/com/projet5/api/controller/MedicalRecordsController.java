@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 
@@ -26,34 +24,33 @@ public class MedicalRecordsController {
     }
 
     @PostMapping("/medicalRecord")
-    public ResponseEntity<Void> saveNewMedicalRecords(@RequestBody MedicalRecords medicalRecord)
+    public ResponseEntity<HttpStatus> saveNewMedicalRecords(@RequestBody MedicalRecords medicalRecord)
     {
-        medicalRecordsService.saveNewMedicalRecords(medicalRecord);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/medicalRecord")
-                .buildAndExpand(medicalRecord.getLastName())
-                .toUri();
-        return ResponseEntity.created(location).build();
-
-
+        if(medicalRecordsService.saveNewMedicalRecords(medicalRecord))
+        {
+            return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("/medicalRecord")
-    public MedicalRecords upDateMedicalRecords(@RequestBody MedicalRecords medicalRecord)
+    public ResponseEntity<HttpStatus> upDateMedicalRecords(@RequestBody MedicalRecords medicalRecord)
     {
-        medicalRecordsService.upDateMedicalRecords(medicalRecord);
-
-        return medicalRecord;
+        if(medicalRecordsService.upDateMedicalRecords(medicalRecord))
+        {
+            return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+        }
+       return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/medicalRecord")
     public ResponseEntity<HttpStatus>  deleteMedicalRecords(@RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
     {
-        medicalRecordsService.deleteMedicalRecords(firstName, lastName);
-
-        return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+        if(medicalRecordsService.deleteMedicalRecords(firstName, lastName))
+        {
+            return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     public void setMedicalRecordsService(MedicalRecordsService medicalRecordsService) {

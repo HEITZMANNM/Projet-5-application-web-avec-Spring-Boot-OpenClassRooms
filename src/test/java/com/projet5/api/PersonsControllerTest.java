@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -41,8 +38,24 @@ public class PersonsControllerTest {
     @InjectMocks
     private PersonsController personsController;
 
-    @Mock(lenient = true)
-    private JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
+    private JSONReaderFromURLIMPL jsonReaderFromURLIMPL = new JSONReaderFromURLIMPL()
+    {
+        @Override
+        public List<Persons> getPersons()
+        {
+            List<Persons>listOfAllPersons = new ArrayList<>();
+            MedicalRecords medicalRecords = new MedicalRecords();
+            List<String>allergies = new ArrayList<>();
+            String allergie = "peanut";
+            allergies.add(allergie);
+            medicalRecords.setAllergies(allergies);
+
+            Persons beth = new Persons("Beth", "Dutton", "11 yellowstone way", "Montana city", 0, null, "BD@gmail.com", null, medicalRecords, 10);
+            listOfAllPersons.add(beth);
+
+            return listOfAllPersons;
+        }
+    };
 
     @BeforeEach
     public void setUp() throws JSONException, JsonProcessingException {
@@ -51,20 +64,6 @@ public class PersonsControllerTest {
         personsService = new PersonsService();
         personsController.setPersonsService(personsService);
         personsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
-        List<Persons>listOfAllPersons = new ArrayList<>();
-        MedicalRecords medicalRecords = new MedicalRecords();
-        List<String>allergies = new ArrayList<>();
-        String allergie = "peanut";
-        allergies.add(allergie);
-        medicalRecords.setAllergies(allergies);
-
-        Persons beth = new Persons("Beth", "Dutton", "11 yellowstone way", "Montana city", 0, null, "BD@gmail.com", null, medicalRecords, 10);
-        listOfAllPersons.add(beth);
-
-        when(jsonReaderFromURLIMPL.getPersonByLastName("Dutton")).thenReturn(listOfAllPersons);
-        when(jsonReaderFromURLIMPL.getAllPersonsByAddress(anyString())).thenReturn(listOfAllPersons);
-        when(jsonReaderFromURLIMPL.getPersons()).thenReturn(listOfAllPersons);
-
     }
 
     @Test
@@ -99,12 +98,11 @@ public class PersonsControllerTest {
     }
 
     @Test
-    public void testPostNewPerson() throws Exception {
-
-
+    public void testPostNewPerson() throws Exception
+    {
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/person")
-                        .content(asJsonString(new Persons("Beth", "Dutton", "11 yellowstone way","Montana city",0, null, null, null, null, 40)))
+                        .content(asJsonString(new Persons("John", "Dutton", "11 yellowstone way","Montana city",0, null, "JDutton@gmail.fr", null, null, 40)))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -112,30 +110,41 @@ public class PersonsControllerTest {
 
 
     @Test
-    public void testUpDatePerson() throws Exception {
-
-        Persons person = new Persons("Beth", "Dutton", "11 yellowstone way","Montana city",0, null, null, null, null, 40);
-
-        personsService.addANewPerson(person);
-
+    public void testUpDatePerson() throws Exception
+    {
         mockMvc.perform( MockMvcRequestBuilders
                         .put("/person")
                         .content(asJsonString(new Persons("Beth", "Dutton", "55 Ranch street","Montana city",0, null, null, null, null, 40)))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("55 Ranch street"));
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpDateAUnknownPerson() throws Exception
+    {
+        mockMvc.perform( MockMvcRequestBuilders
+                        .put("/person")
+                        .content(asJsonString(new Persons("Bill", "Banner", "55 Ranch street","Montana city",0, null, null, null, null, 40)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     public void testDeletePerson() throws Exception {
-        Persons person = new Persons("Beth", "Dutton", "11 yellowstone way","Montana city",0, null, null, null, null, 40);
-
-        personsService.addANewPerson(person);
 
         mockMvc.perform( MockMvcRequestBuilders
-                        .delete("/person?firstName={}&lastName={}", "Beth", "Dutton"))
+                        .delete("/person?firstName=Beth&lastName=Dutton"))
                 .andExpect(status().isAccepted());
+    }
+
+    @Test
+    public void testDeleteAUnknownPerson() throws Exception {
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .delete("/person?firstName={}&lastName={}", "Bill", "Banner"))
+                .andExpect(status().isBadRequest());
     }
 
     public static String asJsonString(final Object obj) {

@@ -92,9 +92,6 @@ public class PersonServiceTest {
             e.printStackTrace();
             throw  new RuntimeException("Failed to set up test mock objects");
         }
-
-
-
     }
 
     //test if method getChildrenAtAddressAndTheOtherMemberOfFamily() return a list  of children and adult who live at the address
