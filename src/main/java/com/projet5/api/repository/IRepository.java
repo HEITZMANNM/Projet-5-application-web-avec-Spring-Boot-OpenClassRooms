@@ -43,7 +43,7 @@ public interface IRepository {
 
     public boolean upDateStationNumber(String address, int stationNumber) throws JSONException, JsonProcessingException;
 
-    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord);
+    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord, String firstName, String lastName);
 
     public boolean upDateMedicalRecords(MedicalRecords medicalRecord);
 

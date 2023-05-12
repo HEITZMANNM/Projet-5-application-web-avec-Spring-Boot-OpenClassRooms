@@ -133,45 +133,49 @@ public class FireStationsService {
         return fireStationNumberAndPersonsByAddress;
     }
 
-    public List<List<Persons>> getFamiliesCoveredByFireStationNumber(int stationNumber)
+    public List<List<Persons>> getFamiliesCoveredByFireStationNumber(List<Integer> stations)
     {
         List<List<Persons>> listOfPersonsOfFamiliesCovered = new ArrayList<>();
-        try
-        {
-            List<Persons> listOfPersonsCoveredByStationNumber = getPersonsCoveredByFireStationNumber(stationNumber);
-            List<String> listOfLastNameOfFamilies = new ArrayList<>();
 
-            for (Persons person : listOfPersonsCoveredByStationNumber)
-            {
-                String lastNameOfFamily = person.getLastName();
-                if (!listOfLastNameOfFamilies.contains(lastNameOfFamily))
-                {
-                    listOfLastNameOfFamilies.add(lastNameOfFamily);
-                    List<Persons> listOfPersonsOfSameFamily = new ArrayList<>();
-                    listOfPersonsOfSameFamily.add(person);
-                    listOfPersonsOfFamiliesCovered.add(listOfPersonsOfSameFamily);
-                }
-                else
-                {
-                    for(List<Persons> list : listOfPersonsOfFamiliesCovered)
-                    {
-                        if (list.get(0).getLastName().equals(lastNameOfFamily))
-                        {
-                            list.add(person);
+        for(int stationNumber : stations)
+        {
+
+            try {
+                List<Persons> listOfPersonsCoveredByStationNumber = getPersonsCoveredByFireStationNumber(stationNumber);
+                List<String> listOfLastNameOfFamilies = new ArrayList<>();
+                List<String> listOfAddress = new ArrayList<>();
+
+                for (Persons person : listOfPersonsCoveredByStationNumber) {
+                    String lastNameOfFamily = person.getLastName();
+                    String addressOfPerson = person.getAddress();
+                    if (!listOfLastNameOfFamilies.contains(lastNameOfFamily)) {
+                        listOfLastNameOfFamilies.add(lastNameOfFamily);
+                        List<Persons> listOfPersonsOfSameFamily = new ArrayList<>();
+                        listOfPersonsOfSameFamily.add(person);
+                        listOfPersonsOfFamiliesCovered.add(listOfPersonsOfSameFamily);
+                        listOfAddress.add(addressOfPerson);
+                    } else {
+                        for (List<Persons> list : listOfPersonsOfFamiliesCovered) {
+                            if (list.get(0).getLastName().equals(lastNameOfFamily) && list.get(0).getAddress().equals(person.getAddress())) {
+                                list.add(person);
+                            }
+                            else if(!list.get(0).getLastName().equals(lastNameOfFamily) && list.get(0).getAddress().equals(person.getAddress()))
+                            {
+                                List<Persons> listOfPersonsOfSameFamily = new ArrayList<>();
+                                listOfPersonsOfSameFamily.add(person);
+                                listOfPersonsOfFamiliesCovered.add(listOfPersonsOfSameFamily);
+                            }
                         }
                     }
-                }
 
-                for(List<Persons> list : listOfPersonsOfFamiliesCovered)
-                {
-                    jsonReaderFromURLIMPL.calculateAgeOfPersons(list);
+                    for (List<Persons> list : listOfPersonsOfFamiliesCovered) {
+                        jsonReaderFromURLIMPL.calculateAgeOfPersons(list);
+                    }
                 }
+                logger.debug("the list of families covered by fire station number was created");
+            } catch (Exception ex) {
+                logger.error("Error fetching the list of families covered by fire station number", ex);
             }
-            logger.debug("the list of families covered by fire station number was created");
-        }
-        catch(Exception ex)
-        {
-            logger.error("Error fetching the list of families covered by fire station number",ex);
         }
         return listOfPersonsOfFamiliesCovered;
     }

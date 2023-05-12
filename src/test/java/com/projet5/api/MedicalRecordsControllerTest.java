@@ -86,11 +86,14 @@ public class MedicalRecordsControllerTest
     public void testToPostNewMedicalRecords() throws Exception {
 
         MedicalRecords medicalRecordsToSave = new MedicalRecords();
-        medicalRecordsToSave.setFirstName("John");
+        medicalRecordsToSave.setFirstName("Beth");
         medicalRecordsToSave.setLastName("Dutton");
+        List<String>medicationsToSave = new ArrayList<>();
+        medicationsToSave.add("doliprane : 100mg");
+        medicalRecordsToSave.setMedications(medicationsToSave);
 
         this.mockMvc.perform( MockMvcRequestBuilders
-                        .post("/medicalRecord")
+                        .post("/medicalRecord?firstName=Beth&lastName=Dutton")
                         .content(asJsonString((medicalRecordsToSave)))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -100,8 +103,6 @@ public class MedicalRecordsControllerTest
     //test to upDate a medicalRecords using the endpoint
     @Test
     public void testUpDateMedialRecords() throws Exception {
-
-
 
         MedicalRecords medicalRecordsToUpDate = new MedicalRecords();
         medicalRecordsToUpDate.setLastName("Dutton");

@@ -34,9 +34,9 @@ public class MedicalRecordsService {
     {
        return jsonReaderFromURLIMPL.getMedicalRecords();
     }
-    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord)
+    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord, String firstName, String lastName)
     {
-        return jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecord);
+        return jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecord, firstName, lastName);
     }
 
     public boolean upDateMedicalRecords(MedicalRecords medicalRecord)

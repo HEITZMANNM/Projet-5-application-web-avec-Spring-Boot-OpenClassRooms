@@ -138,7 +138,7 @@ public class FireStationServiceTest
     @Test
     public void testToFindPeopleCoveredByStationNumber() throws JSONException, JsonProcessingException
     {
-        List<Persons> listOfPersonsCoveredByStationNumber = fireStationsService.getPersonsCoveredByFireStationNumber(4);
+        List<Persons> listOfPersonsCoveredByStationNumber = fireStationsService.getPersonsCoveredByFireStationNumber(3);
 
         assertEquals(listOfPersonsCoveredByStationNumber.size(), 3);
     }
@@ -155,7 +155,9 @@ public class FireStationServiceTest
     @Test
     public void testToFindAllFamiliesCoveredByFireStationNumber() throws JSONException, JsonProcessingException
     {
-        List<List<Persons>> listOfFamiliesCovered = fireStationsService.getFamiliesCoveredByFireStationNumber(4);
+        List<Integer> stations = new ArrayList<>();
+        stations.add(4);
+        List<List<Persons>> listOfFamiliesCovered = fireStationsService.getFamiliesCoveredByFireStationNumber(stations);
 
         assertEquals(listOfFamiliesCovered.size(), 1);
         assertEquals(listOfFamiliesCovered.get(0).size(), 3);

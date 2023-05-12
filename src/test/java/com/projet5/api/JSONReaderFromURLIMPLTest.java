@@ -24,12 +24,23 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class JSONReaderFromURLIMPLTest {
 
-    private static JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
+    public List<MedicalRecords> getListOfMedicalRecords() {
+        return listOfMedicalRecords;
+    }
+
+    private List<MedicalRecords> listOfMedicalRecords = new ArrayList<>();
+    private JSONReaderFromURLIMPL jsonReaderFromURLIMPL = new JSONReaderFromURLIMPL() {
+
+        @Override
+        public List<MedicalRecords> getMedicalRecords()
+        {
+            return getListOfMedicalRecords();
+        }
+    };
 
     //crete a list of persons with medicalRecords and a fireStation which cover them, for control the different method of the repository
     @BeforeEach
     public void setUp() throws JSONException, JsonProcessingException {
-        jsonReaderFromURLIMPL = new JSONReaderFromURLIMPL();
 
         String addressSelected = "11 way of Yellowstone";
 
@@ -65,8 +76,9 @@ public class JSONReaderFromURLIMPLTest {
 
         jsonReaderFromURLIMPL.saveNewPerson(child);
         jsonReaderFromURLIMPL.saveNewPerson(father);
-        jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecordsOfChild);
-        jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecordsOfFather);
+
+        getListOfMedicalRecords().add(medicalRecordsOfChild);
+        getListOfMedicalRecords().add(medicalRecordsOfFather);
 
         FireStations fireStationSearch = new FireStations();
         fireStationSearch.setStation(777);
@@ -312,20 +324,17 @@ public class JSONReaderFromURLIMPLTest {
     @Test
     public void testToSaveNewMedicalRecords()
     {
-        int sizeOfAllMedicalRecordsBeforeSaveTheNew = jsonReaderFromURLIMPL.getListOfAllMedicalRecords().size();
-
         MedicalRecords medicalRecordsToSave = new MedicalRecords();
-        medicalRecordsToSave.setFirstName("Bob");
-        medicalRecordsToSave.setLastName("Marley");
+        medicalRecordsToSave.setFirstName("Beth");
+        medicalRecordsToSave.setLastName("Dutton");
         List<String>medicationsToSave = new ArrayList<>();
         medicationsToSave.add("doliprane : 100mg");
         medicalRecordsToSave.setMedications(medicationsToSave);
 
-        jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecordsToSave);
+        jsonReaderFromURLIMPL.saveNewMedicalRecords(medicalRecordsToSave, "Beth", "Dutton");
 
-        int sizeOfAllMedicalRecordsAfterSaveTheNew = jsonReaderFromURLIMPL.getListOfAllMedicalRecords().size();
 
-        assertEquals(sizeOfAllMedicalRecordsAfterSaveTheNew, sizeOfAllMedicalRecordsBeforeSaveTheNew+1);
+        assertEquals(medicalRecordsToSave.getMedications().get(0), getListOfMedicalRecords().get(0).getMedications().get(0));
     }
 
     //test to upDate medical records

@@ -20,60 +20,72 @@ public class FireStationsController {
     @Autowired
     private FireStationsService fireStationsService;
 
-@JsonView(View.PersonsFirstNameLastNameAddressAndPhoneOnly.class)
+    @JsonView(View.PersonsFirstNameLastNameAddressAndPhoneOnly.class)
 //    @GetMapping(value = "/firestation", produces = "application/json")
-@GetMapping("/firestation")
+    @GetMapping("/firestation")
     public PeopleCoveredByFireStationAndNumberOfChildren getPersonsCoveredByFireStationNumberAndNumberOfChildren(@RequestParam(name="stationNumber") int stationNumber) throws JSONException, IOException {
 
-        return fireStationsService.getPersonsCoveredByFireStationNumberAndNumberOfChildren(stationNumber);
+        PeopleCoveredByFireStationAndNumberOfChildren peopleCoveredByFireStationAndNumberOfChildren = fireStationsService.getPersonsCoveredByFireStationNumberAndNumberOfChildren(stationNumber);
+
+
+        if(peopleCoveredByFireStationAndNumberOfChildren.getListOfPersonsCovered().isEmpty())
+        {
+            return null;
+        }
+        return peopleCoveredByFireStationAndNumberOfChildren;
     }
 
     @JsonView(View.Phone.class)
     @GetMapping("/phoneAlert")
-    public List<Persons> getPhoneNumberOfPersonsCoveredByFireStationNumber(@RequestParam(name = "stationNumber") int stationNumber) throws JSONException, IOException {
-        return fireStationsService.getPersonsCoveredByFireStationNumber(stationNumber);
+    public List<Persons> getPhoneNumberOfPersonsCoveredByFireStationNumber(@RequestParam(name = "firestation") int firestation) throws JSONException, IOException {
+        return fireStationsService.getPersonsCoveredByFireStationNumber(firestation);
     }
 
     @JsonView(View.ListOfPersonWithMedicalRecords.class)
     @GetMapping("/fire")
     public FireStationNumberAndPersonsByAddress getFireStationNumberAndPersonsByAddress(@RequestParam(name = "address") String address)
     {
-        return fireStationsService.getPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem(address);
+        FireStationNumberAndPersonsByAddress fireStationNumberAndPersonsByAddress = fireStationsService.getPersonsWhoLiveAtTheAddressAndFireStationWhichCoverThem(address);
+        if(fireStationNumberAndPersonsByAddress.getListOfPersonWithMedicalRecords().isEmpty())
+        {
+            return null;
+        }
+        return fireStationNumberAndPersonsByAddress;
     }
 
     @JsonView(View.FamiliesPersonsCoveredByStationNumber.class)
     @GetMapping("/flood/stations")
-    public List<List<Persons>> getFamiliesCoveredByFireStationNumber(@RequestParam(name = "stationNumber") int stationNumber){
-    return fireStationsService.getFamiliesCoveredByFireStationNumber(stationNumber);
+    public List<List<Persons>> getFamiliesCoveredByFireStationNumber(@RequestParam(name = "stations") List<Integer> stations){
+        return fireStationsService.getFamiliesCoveredByFireStationNumber(stations);
     }
 
     @PostMapping("/firestation")
     public ResponseEntity<HttpStatus> saveNewFireStation (@RequestBody FireStations fireStation) throws JSONException, JsonProcessingException {
-      if(fireStationsService.addANewFireStation(fireStation))
-      {
-          return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
-      }
+        if(fireStationsService.addANewFireStation(fireStation))
+        {
+            return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
+        }
 
-      return  new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
+        return  new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
 
     @DeleteMapping("/firestationByStationNumber")
     public ResponseEntity<HttpStatus> deleteFireStationByStationNumber(@RequestParam int stationNumber) throws JSONException, JsonProcessingException {
-       if(fireStationsService.deleteFireStationByStationNumber(stationNumber))
-       {
-           return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
-       }
+        if(fireStationsService.deleteFireStationByStationNumber(stationNumber))
+        {
+            return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+        }
 
         return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/firestationByAddress")
     public ResponseEntity<HttpStatus> deleteFireStationByAddress(@RequestParam String address) throws JSONException, JsonProcessingException {
-       if(fireStationsService.deleteFireStationByAddress(address))
-       {
-           return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
-       }
+        if(fireStationsService.deleteFireStationByAddress(address))
+        {
+            return new ResponseEntity<HttpStatus>(HttpStatus.ACCEPTED);
+        }
 
         return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }

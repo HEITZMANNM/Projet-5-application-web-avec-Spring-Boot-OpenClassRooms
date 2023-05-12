@@ -133,7 +133,7 @@ public class FireStationControllerTest {
     @Test
     public void testGetPhoneNumberOfPersonsCoveredByFireStationNumber() throws Exception
     {
-        mockMvc.perform(get("/phoneAlert?stationNumber=3"))
+        mockMvc.perform(get("/phoneAlert?firestation=3"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].phone").value("888-888-888"));
     }
@@ -150,7 +150,7 @@ public class FireStationControllerTest {
     @Test
     public void testGetFamiliesCoveredByFireStationNumber() throws Exception
     {
-        mockMvc.perform(get("/flood/stations?stationNumber=3"))
+        mockMvc.perform(get("/flood/stations?stations=3,4"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.[0].[0].medicalRecords.allergies.[0]").value("peanut"));
     }

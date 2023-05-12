@@ -24,9 +24,9 @@ public class MedicalRecordsController {
     }
 
     @PostMapping("/medicalRecord")
-    public ResponseEntity<HttpStatus> saveNewMedicalRecords(@RequestBody MedicalRecords medicalRecord)
+    public ResponseEntity<HttpStatus> saveNewMedicalRecords(@RequestBody MedicalRecords medicalRecord, @RequestParam(name = "firstName") String firstName, @RequestParam(name = "lastName") String lastName)
     {
-        if(medicalRecordsService.saveNewMedicalRecords(medicalRecord))
+        if(medicalRecordsService.saveNewMedicalRecords(medicalRecord, firstName, lastName))
         {
             return new ResponseEntity<HttpStatus>(HttpStatus.CREATED);
         }

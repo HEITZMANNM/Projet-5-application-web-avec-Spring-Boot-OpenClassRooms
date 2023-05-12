@@ -242,8 +242,16 @@ public class JSONReaderFromURLIMPL implements IRepository{
 
     @Override
     public List<FireStations> getFireStations() throws JSONException, JsonProcessingException {
+
+        if(!listOfAllFireStations.isEmpty())
+        {
+            return listOfAllFireStations;
+        }
+
         ObjectMapper objectMapper = new ObjectMapper();
         JSONArray jsonArray = getFireStationsJson();
+
+
 
         for(int i=0; i<jsonArray.length(); i++)
 //        for(Object jsonPerson : jsonArray)
@@ -528,15 +536,25 @@ public class JSONReaderFromURLIMPL implements IRepository{
     }
 
     @Override
-    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord)
+    public boolean saveNewMedicalRecords(MedicalRecords medicalRecord, String firstName, String lastName)
     {
         listOfAllMedicalRecords = getMedicalRecords();
         boolean response = false;
         try
         {
-            listOfAllMedicalRecords.add(medicalRecord);
-            logger.debug("the new medical records were saved");
-            response = true;
+            for(MedicalRecords medicalRecords : listOfAllMedicalRecords)
+            {
+                if(medicalRecords.getFirstName().equals(firstName) && medicalRecords.getLastName().equals(lastName))
+                {
+                    List<String> listOfMedications = medicalRecord.getMedications();
+                    List<String>listOfAllergies = medicalRecord.getAllergies();
+                    medicalRecords.setMedications(listOfMedications);
+                    medicalRecords.setAllergies(listOfAllergies);
+                    logger.debug("the new medical records were saved");
+                    response = true;
+                }
+            }
+
         }
         catch(Exception ex){
             logger.error("Error save the new medical records",ex);
