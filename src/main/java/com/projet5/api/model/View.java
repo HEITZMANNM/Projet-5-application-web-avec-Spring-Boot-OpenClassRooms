@@ -1,7 +1,5 @@
 package com.projet5.api.model;
 
-import java.util.List;
-
 public class View {
 
     public interface FirstName {
@@ -49,14 +47,14 @@ public class View {
     }
     public interface MedicalRecordsOnly extends Medications, Allergies{
     }
-    public interface ListOfPersonWithMedicalRecords extends FirstName, LastName, Phone, Age, MedicalRecordsOnly , StationNumber{
+    public interface ListOfPersonWithMedicalRecords extends LastName, Phone, Age, MedicalRecordsOnly , StationNumber{
     }
     public interface PersonsFirstNameLastNameAddressAndPhoneOnly extends FirstName, LastName, AddressPerson, Phone {
     }
 
     public interface ChildrenByAddressAndOtherMemberOfFamily extends FirstName, LastName, Age{
     }
-    public interface MedicalRecordsFrontPersonFirstName extends FirstName, MedicalRecordsOnly{
+    public interface MedicalRecordsFrontPersonFirstName extends  MedicalRecordsOnly{
     }
     public interface FamiliesPersonsCoveredByStationNumber extends MedicalRecordsFrontPersonFirstName, LastName, Age, Phone{
     }
