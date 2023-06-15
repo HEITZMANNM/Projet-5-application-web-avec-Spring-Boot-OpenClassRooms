@@ -3,7 +3,7 @@ package com.projet5.api.integration;
 import com.projet5.api.model.MedicalRecords;
 import com.projet5.api.model.Persons;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import com.projet5.api.service.MedicalRecordsService;
+import com.projet5.api.service.MedicalRecordsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class MedicalRecordsServiceIT {
+public class MedicalRecordsServiceImplIT {
 
     public List<MedicalRecords> getListOfMedicalRecords() {
         return listOfMedicalRecords;
@@ -29,13 +29,13 @@ public class MedicalRecordsServiceIT {
         }
     };
 
-    private MedicalRecordsService medicalRecordsService;
+    private MedicalRecordsServiceImpl medicalRecordsService;
 
     //create a person and her medicalRecords to test the different method of MedicalRecordsService
     @BeforeEach
     public void setUp()
     {
-        medicalRecordsService = new MedicalRecordsService();
+        medicalRecordsService = new MedicalRecordsServiceImpl();
 
         medicalRecordsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
 

@@ -2,15 +2,16 @@ package com.projet5.api.integration;
 
 import com.projet5.api.model.Persons;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import com.projet5.api.service.PersonsService;
+import com.projet5.api.service.PersonsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PersonServiceIT {
-    private static PersonsService personsService;
+public class PersonServiceImplIT {
+    private static PersonsServiceImpl personsService;
 
     private static JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
@@ -18,7 +19,7 @@ public class PersonServiceIT {
     @BeforeEach
     public void setUp()
     {
-        personsService = new PersonsService();
+        personsService = new PersonsServiceImpl();
         jsonReaderFromURLIMPL = new JSONReaderFromURLIMPL();
 
         personsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);

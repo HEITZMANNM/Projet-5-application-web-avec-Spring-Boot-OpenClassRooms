@@ -2,7 +2,7 @@ package com.projet5.api.controller;
 
 
 import com.projet5.api.model.MedicalRecords;
-import com.projet5.api.service.MedicalRecordsService;
+import com.projet5.api.service.MedicalRecordsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 public class MedicalRecordsController {
 
     @Autowired
-    MedicalRecordsService medicalRecordsService;
+    private MedicalRecordsServiceImpl medicalRecordsService;
 
     @GetMapping("/medicalRecord")
     public List<MedicalRecords> getAllMedicalRecords()
@@ -53,7 +53,7 @@ public class MedicalRecordsController {
         return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
-    public void setMedicalRecordsService(MedicalRecordsService medicalRecordsService) {
+    public void setMedicalRecordsService(MedicalRecordsServiceImpl medicalRecordsService) {
         this.medicalRecordsService = medicalRecordsService;
     }
 }

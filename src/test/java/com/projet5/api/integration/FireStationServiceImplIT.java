@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.projet5.api.model.FireStations;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
 import com.projet5.api.service.FireStationsService;
+import com.projet5.api.service.FireStationsServiceImpl;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class FireStationServiceIT {
+public class FireStationServiceImplIT {
 
     private static JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
@@ -22,7 +23,7 @@ public class FireStationServiceIT {
     public void setUp() throws JSONException, JsonProcessingException
     {
         jsonReaderFromURLIMPL = new JSONReaderFromURLIMPL();
-        fireStationsService = new FireStationsService();
+        fireStationsService = new FireStationsServiceImpl();
 
         fireStationsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
 

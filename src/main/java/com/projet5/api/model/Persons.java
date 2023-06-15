@@ -1,9 +1,13 @@
 package com.projet5.api.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
 public class Persons {
 
     @JsonView(View.FirstName.class)
@@ -69,4 +73,16 @@ public class Persons {
                 + "email :"+ email + "]";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Persons persons = (Persons) o;
+        return zip == persons.zip && age == persons.age && Objects.equals(firstName, persons.firstName) && Objects.equals(lastName, persons.lastName) && Objects.equals(address, persons.address) && Objects.equals(city, persons.city) && Objects.equals(phone, persons.phone) && Objects.equals(email, persons.email) && Objects.equals(fireStations, persons.fireStations) && Objects.equals(medicalRecords, persons.medicalRecords);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, address, city, zip, phone, email, fireStations, medicalRecords, age);
+    }
 }

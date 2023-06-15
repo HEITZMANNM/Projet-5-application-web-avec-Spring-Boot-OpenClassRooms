@@ -6,7 +6,7 @@ import com.projet5.api.controller.PersonsController;
 import com.projet5.api.model.MedicalRecords;
 import com.projet5.api.model.Persons;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import com.projet5.api.service.PersonsService;
+import com.projet5.api.service.PersonsServiceImpl;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class PersonsControllerTest {
 
     private MockMvc mockMvc;
 
-    private PersonsService personsService;
+    private PersonsServiceImpl personsService;
 
     @InjectMocks
     private PersonsController personsController;
@@ -61,7 +61,7 @@ public class PersonsControllerTest {
     public void setUp() throws JSONException, JsonProcessingException {
         mockMvc = MockMvcBuilders.standaloneSetup(personsController)
                 .build();
-        personsService = new PersonsService();
+        personsService = new PersonsServiceImpl();
         personsController.setPersonsService(personsService);
         personsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
     }

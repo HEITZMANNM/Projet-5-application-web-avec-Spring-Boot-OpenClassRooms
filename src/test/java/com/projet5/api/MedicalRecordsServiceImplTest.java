@@ -2,7 +2,7 @@ package com.projet5.api;
 
 import com.projet5.api.model.MedicalRecords;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import com.projet5.api.service.MedicalRecordsService;
+import com.projet5.api.service.MedicalRecordsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,14 +17,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MedicalRecordsServiceTest
+public class MedicalRecordsServiceImplTest
 {
 
     @Mock(lenient = true)
     private  JSONReaderFromURLIMPL jsonReaderFromURLIMPL;
 
     @InjectMocks
-    private  MedicalRecordsService medicalRecordsService = new MedicalRecordsService();
+    private MedicalRecordsServiceImpl medicalRecordsService = new MedicalRecordsServiceImpl();
 
     private  List<MedicalRecords> listOfAllMedicalRecords;
 

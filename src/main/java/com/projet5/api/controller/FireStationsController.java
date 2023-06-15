@@ -3,7 +3,7 @@ package com.projet5.api.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.projet5.api.model.*;
-import com.projet5.api.service.FireStationsService;
+import com.projet5.api.service.FireStationsServiceImpl;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 public class FireStationsController {
 
     @Autowired
-    private FireStationsService fireStationsService;
+    private FireStationsServiceImpl fireStationsService;
 
     @JsonView(View.PersonsFirstNameLastNameAddressAndPhoneOnly.class)
 //    @GetMapping(value = "/firestation", produces = "application/json")
@@ -100,7 +100,7 @@ public class FireStationsController {
         return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
-    public void setFireStationsService(FireStationsService fireStationService)
+    public void setFireStationsService(FireStationsServiceImpl fireStationService)
     {
         this.fireStationsService = fireStationService;
     }

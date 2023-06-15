@@ -6,7 +6,7 @@ import com.projet5.api.model.FireStations;
 import com.projet5.api.model.PeopleCoveredByFireStationAndNumberOfChildren;
 import com.projet5.api.model.Persons;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import com.projet5.api.service.FireStationsService;
+import com.projet5.api.service.FireStationsServiceImpl;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class FireStationServiceTest
+public class FireStationServiceImplTest
 {
 
     @Mock(lenient = true)
@@ -38,7 +38,7 @@ public class FireStationServiceTest
     private List<Persons> listOfPersonsByAddress;
 
     @InjectMocks
-    private FireStationsService fireStationsService = new FireStationsService();
+    private FireStationsServiceImpl fireStationsService = new FireStationsServiceImpl();
 
     //create fireStations and List of people used to test the different method of fireStationService
     @BeforeEach

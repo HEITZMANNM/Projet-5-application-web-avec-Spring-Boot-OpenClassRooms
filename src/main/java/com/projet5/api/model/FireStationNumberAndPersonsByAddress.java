@@ -1,11 +1,14 @@
 package com.projet5.api.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 public class FireStationNumberAndPersonsByAddress {
 
     @JsonView(View.ListOfPersonWithMedicalRecords.class)
@@ -21,5 +24,18 @@ public class FireStationNumberAndPersonsByAddress {
     }
     public FireStationNumberAndPersonsByAddress()
     {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FireStationNumberAndPersonsByAddress that = (FireStationNumberAndPersonsByAddress) o;
+        return fireStationNumber == that.fireStationNumber && Objects.equals(listOfPersonWithMedicalRecords, that.listOfPersonWithMedicalRecords);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(listOfPersonWithMedicalRecords, fireStationNumber);
     }
 }

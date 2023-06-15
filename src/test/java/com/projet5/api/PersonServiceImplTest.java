@@ -3,7 +3,7 @@ package com.projet5.api;
 import com.projet5.api.model.ListOfChildrenAndAdultsByAddress;
 import com.projet5.api.model.Persons;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import com.projet5.api.service.PersonsService;
+import com.projet5.api.service.PersonsServiceImpl;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +22,10 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class PersonServiceTest {
+public class PersonServiceImplTest {
 
     @InjectMocks
-    private  PersonsService personsService = new PersonsService();
+    private PersonsServiceImpl personsService = new PersonsServiceImpl();
 
     private  List<Persons> listOfPersonsByAddress;
 

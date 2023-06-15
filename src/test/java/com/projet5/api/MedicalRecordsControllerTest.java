@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projet5.api.controller.MedicalRecordsController;
 import com.projet5.api.model.MedicalRecords;
 import com.projet5.api.repository.JSONReaderFromURLIMPL;
-import com.projet5.api.service.MedicalRecordsService;
+import com.projet5.api.service.MedicalRecordsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +30,7 @@ public class MedicalRecordsControllerTest
 {
     private MockMvc mockMvc;
 
-    private MedicalRecordsService medicalRecordsService;
+    private MedicalRecordsServiceImpl medicalRecordsService;
 
     @InjectMocks
     private MedicalRecordsController medicalRecordsController;
@@ -60,7 +60,7 @@ public class MedicalRecordsControllerTest
     {
         mockMvc = MockMvcBuilders.standaloneSetup(medicalRecordsController)
                 .build();
-        medicalRecordsService = new MedicalRecordsService();
+        medicalRecordsService = new MedicalRecordsServiceImpl();
         medicalRecordsController.setMedicalRecordsService(medicalRecordsService);
         medicalRecordsService.setJsonReaderFromURLIMPL(jsonReaderFromURLIMPL);
     }

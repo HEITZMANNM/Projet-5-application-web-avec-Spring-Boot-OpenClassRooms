@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.projet5.api.model.ListOfChildrenAndAdultsByAddress;
 import com.projet5.api.model.Persons;
 import com.projet5.api.model.View;
-import com.projet5.api.service.PersonsService;
+import com.projet5.api.service.PersonsServiceImpl;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 public class PersonsController {
 
     @Autowired
-    private PersonsService personsService;
+    private PersonsServiceImpl personsService;
 
     @JsonView(View.ChildrenByAddressAndOtherMemberOfFamily.class)
     @GetMapping("/childAlert")
@@ -69,7 +69,7 @@ public class PersonsController {
         return new ResponseEntity<HttpStatus>(HttpStatus.BAD_REQUEST);
     }
 
-    public void setPersonsService(PersonsService personsService) {
+    public void setPersonsService(PersonsServiceImpl personsService) {
         this.personsService = personsService;
     }
 }
